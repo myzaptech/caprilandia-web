@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import FaviconManager from "@/components/favicon-manager"
 import {
   MapPin,
@@ -21,8 +22,96 @@ import {
   UtensilsCrossed,
   MessageCircle,
   Menu,
+  Images,
+  Play,
+  Eye
 } from "lucide-react"
 import { useContent } from "@/hooks/use-content"
+import { useState } from "react"
+
+// Componente para mostrar la galería de la habitación
+function RoomGallery({ room }: { room: any }) {
+  const [selectedMedia, setSelectedMedia] = useState(0)
+  const media = room.media || []
+  
+  if (media.length === 0) {
+    return (
+      <div className="text-center p-8 text-gray-500">
+        <Images className="w-12 h-12 mx-auto mb-2" />
+        <p>No hay galería disponible para esta habitación</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Media principal */}
+      <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
+        {media[selectedMedia]?.type === 'video' ? (
+          <video
+            controls
+            className="w-full h-full object-cover"
+            poster={media[selectedMedia]?.thumbnail}
+          >
+            <source src={media[selectedMedia]?.url} type="video/mp4" />
+            Tu navegador no soporta video HTML5.
+          </video>
+        ) : (
+          <Image
+            src={media[selectedMedia]?.url || "/placeholder.svg"}
+            alt={media[selectedMedia]?.alt || room.name}
+            fill
+            className="object-cover"
+          />
+        )}
+      </div>
+
+      {/* Thumbnails */}
+      <div className="flex gap-2 overflow-x-auto pb-2">
+        {media.map((item: any, index: number) => (
+          <button
+            key={index}
+            onClick={() => setSelectedMedia(index)}
+            className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+              selectedMedia === index
+                ? "border-teal-600 ring-2 ring-teal-200"
+                : "border-gray-300 hover:border-gray-400"
+            }`}
+          >
+            {item.type === 'video' ? (
+              <>
+                <Image
+                  src={item.thumbnail || "/placeholder.svg"}
+                  alt={item.alt}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                  <Play className="w-4 h-4 text-white" fill="white" />
+                </div>
+              </>
+            ) : (
+              <Image
+                src={item.url || "/placeholder.svg"}
+                alt={item.alt}
+                fill
+                className="object-cover"
+              />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Info del media actual */}
+      <div className="text-sm text-gray-600">
+        <p>{media[selectedMedia]?.alt}</p>
+        <p className="text-xs">
+          {selectedMedia + 1} de {media.length} • {media[selectedMedia]?.type === 'video' ? 'Video' : 'Imagen'}
+        </p>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const { content, isLoading } = useContent()
@@ -218,9 +307,33 @@ export default function HomePage() {
                       </Badge>
                     ))}
                   </div>
-                  <Button className="w-full bg-teal-600 hover:bg-teal-700">
-                    {room.showPrice && room.price ? "Reservar" : "Consultar Disponibilidad"}
-                  </Button>
+                  
+                  {/* Botones de acción */}
+                  <div className="space-y-2">
+                    <Button className="w-full bg-teal-600 hover:bg-teal-700">
+                      {room.showPrice && room.price ? "Reservar" : "Consultar Disponibilidad"}
+                    </Button>
+                    
+                    {/* Botón para ver galería si tiene media */}
+                    {room.media && room.media.length > 0 && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" className="w-full">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver Galería ({room.media.length} {room.media.length === 1 ? 'archivo' : 'archivos'})
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle className="text-2xl text-teal-700">
+                              Galería de {room.name}
+                            </DialogTitle>
+                          </DialogHeader>
+                          <RoomGallery room={room} />
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}

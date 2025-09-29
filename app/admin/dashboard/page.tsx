@@ -16,6 +16,7 @@ import { useContent, type ContentData } from "@/hooks/use-content"
 import { signOutAdmin, onAuthStateChange, isCurrentUserAdmin } from "@/lib/firebase-auth"
 import ImageUpload from "@/components/image-upload"
 import GalleryUpload from "@/components/gallery-upload"
+import RoomMediaUpload from "@/components/room-media-upload"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -595,12 +596,26 @@ export default function AdminDashboard() {
                             <Label htmlFor={`popular-${index}`}>Marcar como popular</Label>
                           </div>
                         </div>
+                        
+                        {/* Imagen principal (compatibilidad hacia atrás) */}
                         <div>
                           <ImageUpload
                             currentImage={room.image}
                             onImageChange={(url) => updateArrayItem("rooms", "rooms", index, "image", url)}
-                            label={`Imagen de ${room.name}`}
+                            label={`Imagen principal de ${room.name}`}
                             aspectRatio="landscape"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Esta será la imagen que aparece en la vista previa de la habitación
+                          </p>
+                        </div>
+                        
+                        {/* Galería multimedia de la habitación */}
+                        <div className="mt-6">
+                          <RoomMediaUpload
+                            media={room.media || []}
+                            onMediaChange={(media) => updateArrayItem("rooms", "rooms", index, "media", media)}
+                            roomName={room.name}
                           />
                         </div>
                       </div>

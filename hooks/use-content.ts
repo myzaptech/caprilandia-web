@@ -32,7 +32,13 @@ export interface ContentData {
       description: string
       price?: string
       showPrice: boolean
-      image: string
+      image: string // Mantenemos para compatibilidad hacia atrás
+      media?: Array<{
+        type: 'image' | 'video'
+        url: string
+        alt: string
+        thumbnail?: string
+      }>
       features: string[]
       popular: boolean
     }>
@@ -282,31 +288,54 @@ const defaultContent: ContentData = {
 
 // Función para migrar formato de galería de images a items
 const migrateGalleryFormat = (data: any): ContentData => {
-  // Si ya tiene el formato nuevo, devolverlo tal como está
-  if (data.gallery?.items) {
-    return data as ContentData
-  }
+  let migratedData = { ...data }
   
-  // Si tiene el formato anterior con images, convertir a items
-  if (data.gallery?.images) {
-    return {
-      ...data,
-      gallery: {
-        ...data.gallery,
-        items: data.gallery.images.map((image: any) => ({
+  // Migración para galería
+  if (!migratedData.gallery?.items) {
+    if (migratedData.gallery?.images) {
+      migratedData.gallery = {
+        ...migratedData.gallery,
+        items: migratedData.gallery.images.map((image: any) => ({
           type: 'image' as const,
           url: image.url,
           alt: image.alt
         }))
       }
+    } else {
+      migratedData.gallery = defaultContent.gallery
     }
   }
   
-  // Si no tiene galería, usar la por defecto
-  return {
-    ...data,
-    gallery: defaultContent.gallery
+  // Migración para habitaciones: convertir image a media array
+  if (migratedData.rooms?.rooms) {
+    migratedData.rooms.rooms = migratedData.rooms.rooms.map((room: any) => {
+      // Si ya tiene media array, mantenerlo
+      if (room.media) {
+        return room
+      }
+      
+      // Si tiene image string, convertir a media array
+      if (room.image) {
+        return {
+          ...room,
+          media: [{
+            type: 'image' as const,
+            url: room.image,
+            alt: room.name || 'Habitación'
+          }]
+        }
+      }
+      
+      // Si no tiene ni image ni media, crear array vacío
+      return {
+        ...room,
+        image: room.image || '',
+        media: []
+      }
+    })
   }
+  
+  return migratedData as ContentData
 }
 
 export function useContent() {
