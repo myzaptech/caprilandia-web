@@ -3,14 +3,15 @@ import { getFirestore } from "firebase/firestore"
 import { getAuth } from "firebase/auth"
 
 // Firebase configuration - configuración para producción
+// Usamos credenciales hardcodeadas que tienen prioridad sobre variables de entorno
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyAJd6zyhkkqVjuQWb6thS05UeD8-rCaCZ0",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "carilandia-base.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "carilandia-base",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "carilandia-base.firebasestorage.app",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "841945640213",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:841945640213:web:35cec3e1e3c91085db0d1c",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-HXPX889G7H",
+  apiKey: "AIzaSyAJd6zyhkkqVjuQWb6thS05UeD8-rCaCZ0",
+  authDomain: "carilandia-base.firebaseapp.com",
+  projectId: "carilandia-base",
+  storageBucket: "carilandia-base.firebasestorage.app",
+  messagingSenderId: "841945640213",
+  appId: "1:841945640213:web:35cec3e1e3c91085db0d1c",
+  measurementId: "G-HXPX889G7H",
 }
 
 // Verificar que Firebase no esté ya inicializado (evita errores en desarrollo)
