@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpiar Cache - Caprilandia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #14b8a6;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        .btn {
+            background: #14b8a6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            min-width: 150px;
+        }
+        .btn:hover {
+            background: #0f766e;
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏨 Caprilandia</div>
+        <h1>Limpiar Cache del Navegador</h1>
+        <div class="message">
+            Si experimentas problemas de carga o errores en la página, 
+            puedes limpiar el cache para cargar la versión más reciente.
+        </div>
+        
+        <button class="btn" onclick="clearCache()">🧹 Limpiar Cache</button>
+        <button class="btn btn-secondary" onclick="forceReload()">🔄 Forzar Recarga</button>
+        <button class="btn btn-secondary" onclick="goToSite()">🏠 Ir al Sitio</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div style="margin-top: 30px; font-size: 14px; color: #888;">
+            <p><strong>¿Qué hace esto?</strong></p>
+            <p>• Limpia los archivos JavaScript obsoletos<br>
+            • Elimina imágenes en cache<br>
+            • Fuerza la descarga de la versión más reciente</p>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        async function clearCache() {
+            try {
+                showStatus('Limpiando cache...', 'success');
+                
+                // Limpiar Service Workers si existen
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        registration.unregister();
+                    }
+                }
+                
+                // Limpiar Cache API
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => {
+                            console.log('Deleting cache:', cacheName);
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }
+                
+                // Limpiar localStorage
+                localStorage.clear();
+                
+                // Limpiar sessionStorage
+                sessionStorage.clear();
+                
+                showStatus('✅ Cache limpiado exitosamente. Redirigiendo...', 'success');
+                
+                setTimeout(() => {
+                    // Redirigir con parámetros para evitar cache
+                    window.location.href = '/?v=' + Date.now();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error clearing cache:', error);
+                showStatus('❌ Error al limpiar cache. Intenta con "Forzar Recarga".', 'error');
+            }
+        }
+
+        function forceReload() {
+            showStatus('Forzando recarga...', 'success');
+            // Force reload bypassing cache
+            window.location.reload(true);
+        }
+
+        function goToSite() {
+            window.location.href = '/?v=' + Date.now();
+        }
+
+        // Auto-limpiar si se detectan parámetros específicos
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('auto') === 'clear') {
+            setTimeout(clearCache, 1000);
+        }
+    </script>
+</body>
+</html>

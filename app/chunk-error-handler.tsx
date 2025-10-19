@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 
 export function ChunkErrorHandler() {
   useEffect(() => {
+    let chunkErrorCount = 0
+    const MAX_CHUNK_ERRORS = 3
+
     // Manejar errores de carga de chunks
     const handleChunkError = (event: ErrorEvent) => {
       const error = event.error
@@ -14,28 +17,22 @@ export function ChunkErrorHandler() {
         error.message?.includes('Loading chunk') ||
         error.message?.includes('failed')
       )) {
-        console.warn('🔄 Chunk loading error detected, reloading page...', error)
+        chunkErrorCount++
+        console.warn(`🔄 Chunk loading error detected (#${chunkErrorCount}):`, error)
         
-        // Mostrar mensaje al usuario antes de recargar
-        const shouldReload = confirm(
-          'La página necesita actualizarse para cargar la versión más reciente. ¿Deseas continuar?'
-        )
+        if (chunkErrorCount >= MAX_CHUNK_ERRORS) {
+          // Si hay múltiples errores, redirigir a la página de limpieza
+          console.warn('🔄 Multiple chunk errors detected, redirecting to cache clear page...')
+          window.location.href = '/clear-cache.html?auto=clear'
+          return
+        }
         
-        if (shouldReload) {
-          // Limpiar cache del navegador y recargar
-          if (typeof window !== 'undefined' && 'caches' in window) {
-            caches.keys().then(names => {
-              names.forEach(name => {
-                if (name.includes('next-static') || name.includes('webpack')) {
-                  caches.delete(name)
-                }
-              })
-            }).then(() => {
-              window.location.reload()
-            })
-          } else if (typeof window !== 'undefined') {
+        // Para el primer error, intentar reload suave
+        if (chunkErrorCount === 1) {
+          console.log('🔄 Attempting soft reload...')
+          setTimeout(() => {
             window.location.reload()
-          }
+          }, 1000)
         }
       }
     }

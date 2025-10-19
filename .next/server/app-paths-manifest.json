@@ -1,12 +1,12 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
   "/admin/login/page": "app/admin/login/page.js",
-  "/api/content/route": "app/api/content/route.js",
+  "/api/content/[section]/route": "app/api/content/[section]/route.js",
   "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/api/content/route": "app/api/content/route.js",
   "/api/cleanup/route": "app/api/cleanup/route.js",
   "/api/upload/route": "app/api/upload/route.js",
-  "/page": "app/page.js",
   "/test-firebase/page": "app/test-firebase/page.js",
-  "/api/content/[section]/route": "app/api/content/[section]/route.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js"
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/page": "app/page.js"
 }
