@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     "img-src 'self' data: blob: *.vercel-storage.com *.v0.dev *.firebasestorage.app *.googleusercontent.com",
     "media-src 'self' data: blob: *.firebasestorage.app *.googleapis.com *.googleusercontent.com",
     "frame-src 'self' *.youtube.com *.google.com",
-    "connect-src 'self' *.vercel.app *.googleapis.com *.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com *.googleusercontent.com",
+    "connect-src 'self' blob: *.vercel.app *.googleapis.com *.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com *.googleusercontent.com",
     "font-src 'self' fonts.gstatic.com data:",
     "object-src 'none'",
     "base-uri 'self'",

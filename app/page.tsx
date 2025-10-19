@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import FaviconManager from "@/components/favicon-manager"
 import SafeImage from "@/components/safe-image"
+import SafeVideo from "@/components/safe-video"
 import {
   MapPin,
   Phone,
@@ -122,15 +123,15 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
       {/* Media principal */}
       <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 group">
         {currentMedia?.type === 'video' ? (
-          <video
-            controls
-            className="w-full h-full object-cover"
+          <SafeVideo
+            src={currentMedia?.url}
             poster={currentMedia?.thumbnail}
+            className="w-full h-full object-cover"
             key={selectedMedia} // Fuerza re-render cuando cambia
+            fallbackMessage={content.ui?.messages.videoNotSupported || "Tu navegador no soporta video HTML5."}
           >
-            <source src={currentMedia?.url} type="video/mp4" />
             {content.ui?.messages.videoNotSupported || "Tu navegador no soporta video HTML5."}
-          </video>
+          </SafeVideo>
         ) : (
           <Image
             src={currentMedia?.url || "/placeholder.svg"}
@@ -259,15 +260,15 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
             </DialogHeader>
             <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
               {currentMedia?.type === 'video' ? (
-                <video
-                  controls
-                  autoPlay
-                  className="w-full h-full object-contain"
+                <SafeVideo
+                  src={currentMedia?.url}
                   poster={currentMedia?.thumbnail}
+                  className="w-full h-full object-contain"
+                  autoPlay
+                  fallbackMessage="Video no disponible"
                 >
-                  <source src={currentMedia?.url} type="video/mp4" />
                   Tu navegador no soporta video HTML5.
-                </video>
+                </SafeVideo>
               ) : (
                 <Image
                   src={currentMedia?.url || "/placeholder.svg"}
@@ -855,15 +856,15 @@ export default function HomePage() {
                     />
                   ) : (
                     <div className="relative">
-                      <video
+                      <SafeVideo
                         src={item.url}
                         poster={item.thumbnail}
                         className="rounded-lg object-cover w-full h-48 lg:h-64"
-                        controls
                         preload="metadata"
+                        fallbackMessage={content.ui?.messages.videoNotSupported || "Tu navegador no soporta video HTML5."}
                       >
                         {content.ui?.messages.videoNotSupportedFull || "Tu navegador no soporta la reproducción de videos."}
-                      </video>
+                      </SafeVideo>
                       <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                         {content.ui?.labels.video || "VIDEO"}
                       </div>

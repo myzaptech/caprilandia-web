@@ -10,10 +10,10 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
       let hasChanges = false
       const cleanedContent = { ...content }
 
-      // Función para verificar si una imagen existe
-      const checkImageExists = async (url: string): Promise<boolean> => {
+      // Función para verificar si un archivo existe
+      const checkFileExists = async (url: string): Promise<boolean> => {
         if (!url || !url.startsWith('/uploads/')) {
-          return true // No es una imagen local, no necesita verificación
+          return true // No es un archivo local, no necesita verificación
         }
 
         try {
@@ -26,7 +26,7 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
 
       // Limpiar imágenes de hero
       if (content.hero?.backgroundImage?.startsWith('/uploads/')) {
-        const exists = await checkImageExists(content.hero.backgroundImage)
+        const exists = await checkFileExists(content.hero.backgroundImage)
         if (!exists) {
           console.warn(`❌ Imagen de hero no encontrada: ${content.hero.backgroundImage}`)
           cleanedContent.hero.backgroundImage = ""
@@ -36,7 +36,7 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
 
       // Limpiar imágenes de about
       if (content.about?.image?.startsWith('/uploads/')) {
-        const exists = await checkImageExists(content.about.image)
+        const exists = await checkFileExists(content.about.image)
         if (!exists) {
           console.warn(`❌ Imagen de about no encontrada: ${content.about.image}`)
           cleanedContent.about.image = ""
@@ -51,7 +51,7 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
           
           // Limpiar imagen principal
           if (room.image?.startsWith('/uploads/')) {
-            const exists = await checkImageExists(room.image)
+            const exists = await checkFileExists(room.image)
             if (!exists) {
               console.warn(`❌ Imagen de habitación no encontrada: ${room.image}`)
               cleanedContent.rooms.rooms[i].image = ""
@@ -64,7 +64,7 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
             const cleanedMedia = []
             for (const media of room.media) {
               if (media.url.startsWith('/uploads/')) {
-                const exists = await checkImageExists(media.url)
+                const exists = await checkFileExists(media.url)
                 if (exists) {
                   cleanedMedia.push(media)
                 } else {
@@ -85,7 +85,7 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
         const cleanedItems = []
         for (const item of content.gallery.items) {
           if (item.url.startsWith('/uploads/')) {
-            const exists = await checkImageExists(item.url)
+            const exists = await checkFileExists(item.url)
             if (exists) {
               cleanedItems.push(item)
             } else {
