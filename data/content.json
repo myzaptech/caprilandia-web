@@ -1,337 +1,246 @@
 {
   "siteConfig": {
-    "favicon": "",
-    "logo": "/placeholder-logo.png",
-    "title": "Hostal Caprilandia en Zapatoca - El mejor alojamiento en Zapatoca, Santander",
-    "description": "Descubre la experiencia única del Hostal Caprilandia en Zapatoca, Santander. Un refugio acogedor que combina la calidez de un hogar con la comodidad moderna en el corazón de Zapatoca."
+    "favicon": "/uploads/images/favicon.ico",
+    "logo": "/uploads/images/caprilandia-logo.png",
+    "title": "Hostal Caprilandia - Zapatoca, Santander",
+    "description": "Hostal Caprilandia en Zapatoca, Santander. Experiencia auténtica en un pueblo colonial con habitaciones cómodas y atención personalizada."
   },
   "hero": {
-    "title": "Hostal Caprilandia",
-    "subtitle": "El mejor hostal en Zapatoca, Santander",
-    "backgroundImage": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_afd07f47.jpg-FB6tz2Q2qWXSTPnQVQyvw64Cso6zam.jpeg"
+    "title": "Bienvenidos a Caprilandia",
+    "subtitle": "Un refugio de autenticidad en el corazón de Zapatoca",
+    "backgroundImage": "/uploads/images/hero-background.jpg"
   },
   "about": {
-    "title": "Bienvenidos a Caprilandia en Zapatoca",
-    "description1": "Ubicado en el corazón de Zapatoca, Santander, el Hostal Caprilandia es un refugio acogedor que combina la calidez de un hogar con la comodidad que necesitas para disfrutar de tu estancia en este hermoso pueblo patrimonio.",
-    "description2": "Nuestros espacios llenos de color, detalles artesanales santandereanos y un ambiente familiar crean una experiencia única que te hará sentir como en casa mientras exploras las maravillas de Zapatoca.",
-    "image": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.10.22_95b0216a.jpg-I5MQLmHJbMYdpGnGGhsmTbyeHFBdKI.jpeg",
-    "features": [
-      { "name": "Ambiente familiar", "icon": "users" },
-      { "name": "WiFi de alta velocidad", "icon": "wifi" },
-      { "name": "Ubicación privilegiada", "icon": "map-pin" },
-      { "name": "Check-in 24/7", "icon": "clock" }
-    ]
-  },
-  "location": {
-    "title": "Ubicados en Zapatoca, Santander",
-    "subtitle": "Descubre la magia de Zapatoca, uno de los pueblos más hermosos de Santander, donde nuestro hostal te espera para ofrecerte una experiencia única.",
-    "whyChooseTitle": "¿Por qué elegir nuestro hostal en Zapatoca?",
+    "title": "Nuestra Historia",
+    "description1": "Caprilandia es más que un hostal; es un refugio donde el pasado y el presente se encuentran para crear experiencias memorables.",
+    "description2": "Ubicado en el encantador pueblo colonial de Zapatoca, ofrecemos hospitalidad auténtica en un ambiente familiar y acogedor.",
+    "image": "/uploads/images/about-interior.jpg",
     "features": [
       {
-        "name": "Ubicación Estratégica",
-        "description": "En el corazón de Zapatoca, cerca de todos los atractivos turísticos del pueblo.",
+        "name": "Ambiente Familiar",
+        "icon": "users"
+      },
+      {
+        "name": "WiFi Gratuito",
+        "icon": "wifi"
+      },
+      {
+        "name": "Ubicación Central",
         "icon": "map-pin"
       },
       {
-        "name": "Turismo de Naturaleza", 
-        "description": "Acceso directo a cascadas, senderos ecológicos y paisajes únicos de Santander.",
-        "icon": "mountain"
-      },
-      {
-        "name": "Cultura Local",
-        "description": "Sumérgete en la rica cultura e historia de Zapatoca, pueblo patrimonio de Colombia.",
-        "icon": "home"
+        "name": "Atención 24/7",
+        "icon": "clock"
       }
-    ],
-    "highlight": {
-      "title": "El Mejor Hostal de Zapatoca",
-      "description": "Caprilandia es reconocido como uno de los mejores hostales en Zapatoca por su excelente servicio, ubicación privilegiada y ambiente acogedor que hace sentir a cada huésped como en casa."
-    },
-    "image": "/placeholder.svg",
-    "imageAlt": "Zapatoca, Santander - Vista del pueblo",
-    "imageCaption": {
-      "title": "Zapatoca, Santander",
-      "subtitle": "Pueblo Patrimonio de Colombia"
-    },
-    "attractions": {
-      "title": "Atractivos Turísticos cerca de nuestro Hostal",
-      "items": [
-        {
-          "name": "Cascadas",
-          "description": "Cascadas naturales a pocos minutos de nuestro hostal",
-          "icon": "mountain"
-        },
-        {
-          "name": "Centro Histórico", 
-          "description": "Arquitectura colonial y calles empedradas únicas",
-          "icon": "home"
-        },
-        {
-          "name": "Cultura Local",
-          "description": "Artesanías y tradiciones auténticas de Santander", 
-          "icon": "users"
-        },
-        {
-          "name": "Gastronomía",
-          "description": "Delicias típicas santandereanas y cocina local",
-          "icon": "utensils-crossed"
-        }
-      ]
-    }
+    ]
   },
   "rooms": {
-    "title": "Muestra de Habitaciones",
-    "subtitle": "Descubre nuestros espacios únicos diseñados para brindarte comodidad y una experiencia auténtica durante tu estadía.",
+    "title": "Nuestras Habitaciones",
+    "subtitle": "Comodidad y autenticidad en cada espacio",
     "rooms": [
       {
         "name": "Habitación Standard",
-        "description": "Ideal para viajeros que buscan comodidad y autenticidad a un precio accesible.",
-        "price": "$120/noche",
+        "description": "Habitación cómoda con todas las comodidades básicas para una estancia placentera.",
+        "price": "Desde $50,000/noche",
         "showPrice": true,
-        "image": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-        "features": ["1 cama doble", "Baño privado", "WiFi"],
-        "popular": false,
+        "image": "/uploads/images/room-standard.jpg",
         "media": [
           {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-            "alt": "Habitación Standard - Vista general",
-            "description": "Vista panorámica de la habitación con cama doble y decoración tradicional"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
-            "alt": "Habitación Standard - Baño privado",
-            "description": "Baño completo con acabados tradicionales y todas las comodidades"
-          },
-          {
             "type": "video",
-            "url": "https://www.youtube.com/watch?v=73uIlU90th0",
-            "thumbnail": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-            "alt": "Tour virtual de la Habitación Standard",
-            "description": "Recorrido completo por la habitación y sus espacios"
+            "url": "/uploads/videos/1760915428561_d9zakp875.mp4",
+            "alt": "Video de Habitación Standard 1",
+            "thumbnail": "/uploads/thumbnails/room-standard-thumb.jpg"
           }
-        ]
+        ],
+        "features": [
+          "Cama doble",
+          "Baño privado",
+          "WiFi",
+          "Ventilador"
+        ],
+        "popular": false
       },
       {
-        "name": "Habitación Superior",
-        "description": "Amplio espacio con detalles artesanales y vista a nuestro patio interior.",
-        "price": "$180/noche",
+        "name": "Habitación Deluxe",
+        "description": "Habitación espaciosa con vistas al pueblo y comodidades premium.",
+        "price": "Desde $70,000/noche",
         "showPrice": true,
-        "image": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-        "features": ["1 cama king", "Baño con jacuzzi", "Balcón privado"],
-        "popular": true,
+        "image": "/uploads/images/room-deluxe.jpg",
         "media": [
           {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-            "alt": "Habitación Superior - Cama king size",
-            "description": "Habitación amplia con cama king size y decoración colonial elegante"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
-            "alt": "Habitación Superior - Balcón privado",
-            "description": "Balcón con vista al patio interior del hostal"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
-            "alt": "Habitación Superior - Baño con jacuzzi",
-            "description": "Baño completo con jacuzzi y acabados de lujo"
-          },
-          {
             "type": "video",
-            "url": "https://www.youtube.com/watch?v=73uIlU90th0",
-            "thumbnail": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-            "alt": "Tour 360° de la Habitación Superior",
-            "description": "Recorrido virtual mostrando todos los espacios de esta habitación premium"
+            "url": "/uploads/videos/1760915596717_eka9mqevg.mp4",
+            "alt": "Video de Habitación Deluxe 1",
+            "thumbnail": "/uploads/thumbnails/room-deluxe-thumb.jpg"
           }
-        ]
+        ],
+        "features": [
+          "Cama queen",
+          "Baño privado",
+          "WiFi",
+          "A/C",
+          "Balcón"
+        ],
+        "popular": true
       },
       {
-        "name": "Suite Caprilandia",
-        "description": "Nuestra suite más exclusiva, con detalles originales y todas las comodidades modernas.",
-        "price": "$250/noche",
+        "name": "Habitación Familiar",
+        "description": "Ideal para familias, con espacio amplio y múltiples camas.",
+        "price": "Desde $90,000/noche",
         "showPrice": true,
-        "image": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
-        "features": ["Dormitorio + sala", "Baño completo", "Terraza privada"],
-        "popular": false,
+        "image": "/uploads/images/room-family.jpg",
         "media": [
           {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
-            "alt": "Suite Caprilandia - Sala de estar",
-            "description": "Amplia sala de estar con decoración colonial y muebles artesanales"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-            "alt": "Suite Caprilandia - Dormitorio principal",
-            "description": "Dormitorio principal con cama matrimonial y detalles únicos"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-            "alt": "Suite Caprilandia - Terraza privada",
-            "description": "Terraza privada con vista panorámica de Zapatoca"
-          },
-          {
-            "type": "image",
-            "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
-            "alt": "Suite Caprilandia - Baño de lujo",
-            "description": "Baño completo con acabados de lujo y todas las comodidades"
-          },
-          {
             "type": "video",
-            "url": "https://www.youtube.com/watch?v=73uIlU90th0",
-            "thumbnail": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
-            "alt": "Tour completo de la Suite Caprilandia",
-            "description": "Recorrido detallado por todos los espacios de nuestra suite más exclusiva"
-          },
-          {
-            "type": "video",
-            "url": "https://www.youtube.com/watch?v=73uIlU90th0",
-            "thumbnail": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-            "alt": "Vista aérea desde la terraza",
-            "description": "Video mostrando la vista panorámica desde la terraza privada de la suite"
+            "url": "/uploads/videos/1760915644669_zghxcgejo.mp4",
+            "alt": "Video de Habitación Familiar 1",
+            "thumbnail": "/uploads/thumbnails/room-family-thumb.jpg"
           }
-        ]
+        ],
+        "features": [
+          "2 camas dobles",
+          "Baño privado",
+          "WiFi",
+          "Área de estar"
+        ],
+        "popular": false
       }
     ]
   },
   "virtualTour": {
     "title": "Tour Virtual",
-    "subtitle": "Conoce cada rincón de nuestro hostal Caprilandia a través de este recorrido virtual.",
-    "videoUrl": "https://www.youtube.com/embed/73uIlU90th0"
+    "subtitle": "Conoce nuestras instalaciones desde casa",
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ"
   },
   "gallery": {
     "title": "Galería",
-    "subtitle": "Un vistazo a los espacios que hacen único a nuestro hostal.",
+    "subtitle": "Descubre la belleza de nuestro hostal y Zapatoca",
     "items": [
       {
+        "type": "video",
+        "url": "/uploads/videos/1760915428561_d9zakp875.mp4",
+        "alt": "Video 1 - Hostal Caprilandia",
+        "thumbnail": "/uploads/thumbnails/video-1-thumb.jpg"
+      },
+      {
+        "type": "video",
+        "url": "/uploads/videos/1760915596717_eka9mqevg.mp4",
+        "alt": "Video 2 - Hostal Caprilandia",
+        "thumbnail": "/uploads/thumbnails/video-2-thumb.jpg"
+      },
+      {
+        "type": "video",
+        "url": "/uploads/videos/1760915644669_zghxcgejo.mp4",
+        "alt": "Video 3 - Hostal Caprilandia",
+        "thumbnail": "/uploads/thumbnails/video-3-thumb.jpg"
+      },
+      {
+        "type": "video",
+        "url": "/uploads/videos/1760916177786_bxmumsc71.mp4",
+        "alt": "Video 4 - Hostal Caprilandia",
+        "thumbnail": "/uploads/thumbnails/video-4-thumb.jpg"
+      },
+      {
         "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
+        "url": "/uploads/images/gallery-1.jpg",
         "alt": "Fachada del hostal"
       },
       {
         "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-        "alt": "Detalles arquitectónicos"
-      },
-      {
-        "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_d9e82168.jpg-Bh4HBqs7fTTwdijxqviqD08miTn2jX.jpeg",
-        "alt": "Área de restaurante"
-      },
-      {
-        "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.06_20165b0e.jpg-7CJeiR7FIf0WX0cLbqaGmyctchZOgH.jpeg",
-        "alt": "Decoración tradicional"
-      },
-      {
-        "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.10.22_95b0216a.jpg-I5MQLmHJbMYdpGnGGhsmTbyeHFBdKI.jpeg",
-        "alt": "Vista interior"
-      },
-      {
-        "type": "image",
-        "url": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_8ba5e1de.jpg-BDqgTOAKgB9QSVi9n9hfs4CS62JFvR.jpeg",
-        "alt": "Letrero Caprilandia"
-      },
-      {
-        "type": "video",
-        "url": "",
-        "alt": "Tour virtual del hostal",
-        "thumbnail": ""
+        "url": "/uploads/images/gallery-2.jpg",
+        "alt": "Patio interior"
       }
     ]
   },
   "services": {
     "title": "Nuestros Servicios",
-    "subtitle": "Más que un lugar para dormir, una experiencia auténtica.",
+    "subtitle": "Todo lo que necesitas para una estancia perfecta",
     "services": [
       {
-        "name": "Habitaciones Confortables",
-        "description": "Disfruta de nuestras habitaciones decoradas con un estilo único, combinando comodidad y autenticidad.",
+        "name": "Alojamiento Cómodo",
+        "description": "Habitaciones limpias y confortables",
         "icon": "bed"
       },
       {
-        "name": "Desayuno Casero",
-        "description": "Comienza tu día con un desayuno preparado con ingredientes locales y recetas tradicionales.",
+        "name": "Desayuno",
+        "description": "Desayuno continental incluido",
         "icon": "utensils-crossed"
       },
       {
         "name": "WiFi Gratuito",
-        "description": "Mantente conectado durante todo tu estancia con nuestro servicio de internet de alta velocidad.",
+        "description": "Internet de alta velocidad",
         "icon": "wifi"
       },
       {
         "name": "Tours Locales",
-        "description": "Ofrecemos información y organización de tours para que conozcas los mejores lugares de la región.",
+        "description": "Excursiones a sitios de interés",
         "icon": "mountain"
       },
       {
-        "name": "Experiencia Colonial",
-        "description": "Sumérgete en la arquitectura y el ambiente colonial que caracteriza nuestro hostal y la región.",
+        "name": "Ambiente Familiar",
+        "description": "Atención personalizada y cálida",
         "icon": "home"
       },
       {
-        "name": "Áreas Comunes",
-        "description": "Disfruta de nuestros espacios compartidos, ideales para relajarte y socializar con otros viajeros.",
+        "name": "Grupos",
+        "description": "Tarifas especiales para grupos",
         "icon": "users"
       }
     ]
   },
   "testimonials": {
-    "title": "Lo que dicen nuestros huéspedes",
-    "subtitle": "Experiencias reales de viajeros que han disfrutado de nuestro hostal.",
-    "note": "El número de teléfono registrado en Google Maps no está relacionado al establecimiento. Estamos trabajando en solucionar este inconveniente. Para contacto directo, utiliza nuestro WhatsApp oficial.",
+    "title": "Lo que Dicen Nuestros Huéspedes",
+    "subtitle": "Experiencias reales de quienes nos han visitado",
+    "note": "Las siguientes reseñas son ejemplos basados en comentarios típicos de huéspedes. Visítanos para crear tu propia experiencia memorable.",
+    "testimonials": [],
     "reviews": [
       {
         "name": "María González",
         "rating": 5,
-        "comment": "Una experiencia auténtica que nos encantó. Cada detalle del hostal respira calidez y encanto. El personal fue excepcionalmente amable y servicial.",
+        "comment": "Excelente atención y muy limpio. La ubicación es perfecta para conocer Zapatoca.",
         "initials": "MG",
-        "mapLink": "https://g.co/kgs/3c4hdq1"
+        "mapLink": "https://goo.gl/maps/example1"
       },
       {
-        "name": "John Smith",
+        "name": "Carlos Rodríguez",
         "rating": 5,
-        "comment": "El balance perfecto entre autenticidad y comodidad. Nos encantó el ambiente familiar y la decoración única. Volveremos pronto.",
-        "initials": "JS",
-        "mapLink": "https://g.co/kgs/RXStUEn"
+        "comment": "Un lugar muy acogedor, se siente como en casa. Altamente recomendado.",
+        "initials": "CR",
+        "mapLink": "https://goo.gl/maps/example2"
       },
       {
-        "name": "Ana Rodríguez",
+        "name": "Ana Martínez",
         "rating": 4,
-        "comment": "El hostal superó todas nuestras expectativas. La combinación de colores y el ambiente acogedor hacen de este lugar algo especial. Volveremos sin duda.",
-        "initials": "AR",
-        "mapLink": "https://g.co/kgs/FSxqwfx"
+        "comment": "Muy buena relación calidad-precio. El personal es muy amable.",
+        "initials": "AM",
+        "mapLink": "https://goo.gl/maps/example3"
       }
     ]
   },
   "contact": {
-    "title": "Reserva tu estadía en Zapatoca",
-    "description": "Estamos ubicados en el corazón de Zapatoca, Santander. Contáctanos para responder tus preguntas y ayudarte a planificar tu visita a este hermoso pueblo patrimonio.",
-    "whatsapp": "+57 318 265 8636",
-    "email": "info@caprilandia.com",
-    "address": "Zapatoca, Santander, Colombia",
+    "title": "Contacto",
+    "subtitle": "¿Listo para tu próxima aventura?",
+    "description": "Estamos aquí para hacer de tu estancia una experiencia inolvidable. Contáctanos para reservas o información.",
+    "phone": "+57 300 123 4567",
+    "whatsapp": "+57 300 123 4567",
+    "email": "info@hostalcaprilandia.com",
+    "address": "Calle Principal #123, Zapatoca, Santander",
+    "hours": "24 horas",
     "socialLinks": {
-      "facebook": "https://www.facebook.com/people/Hostal-Caprilandia-Ardila/100063707374733/",
-      "instagram": "https://www.instagram.com/hostalcaprilandia/",
-      "youtube": "https://www.youtube.com/@caprilandia4701"
+      "facebook": "https://facebook.com/hostalcaprilandia",
+      "instagram": "https://instagram.com/hostalcaprilandia",
+      "youtube": "https://youtube.com/@hostalcaprilandia"
     }
   },
   "footer": {
-    "description": "Caprilandia - El mejor hostal en Zapatoca, Santander. Un refugio de autenticidad donde el pasado y el presente se encuentran para crear experiencias memorables. Hostal Caprilandia, tu hogar lejos de casa en el corazón de Zapatoca.",
-    "copyright": "2025 Caprilandia - Hostal en Zapatoca, Santander. Todos los derechos reservados.",
-    "tagline": "Hostal Caprilandia Zapatoca | El mejor alojamiento en Zapatoca | Turismo Santander"
+    "description": "Un refugio de autenticidad donde el pasado y el presente se encuentran para crear experiencias memorables.",
+    "copyright": "2025 Hostal Caprilandia. Todos los derechos reservados.",
+    "tagline": "Hostal Caprilandia | Alojamiento de calidad | Turismo Colombia"
   },
   "ui": {
     "navigation": {
       "home": "Inicio",
-      "rooms": "Habitaciones", 
+      "rooms": "Habitaciones",
       "gallery": "Galería",
       "services": "Servicios",
       "contact": "Contacto",
@@ -346,29 +255,25 @@
       "sendWhatsApp": "Enviar por WhatsApp"
     },
     "messages": {
-      "noGallery": "No hay galería disponible para esta habitación",
+      "noGallery": "No hay galería disponible",
       "noGalleryItems": "No hay elementos en la galería",
       "videoNotSupported": "Tu navegador no soporta video HTML5.",
       "videoNotSupportedFull": "Tu navegador no soporta la reproducción de videos.",
-      "fileCount": "{count} {count === 1 ? 'archivo' : 'archivos'}"
+      "fileCount": "archivos"
     },
     "labels": {
       "galleryOf": "Galería de {name}",
       "video": "VIDEO",
-      "image": "Imagen",
+      "image": "IMAGEN",
       "of": "de"
     }
   },
   "map": {
-    "latitude": "6.814540731844357",
-    "longitude": "-73.26600351968037",
-    "zoom": "18",
+    "latitude": "6.8145",
+    "longitude": "-73.2660",
+    "zoom": "15",
     "title": "Ubicación Hostal Caprilandia - Zapatoca, Santander",
     "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d350.16210276890513!2d-73.26600351968037!3d6.814540731844357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6832a2bf719429%3A0x50f0263dbf207ef2!2sHostal%20caprilandia!5e0!3m2!1ses-419!2sco!4v1760895441635!5m2!1ses-419!2sco",
-    "directUrl": "https://maps.app.goo.gl/LvxJSddRxRyctcbZA"
-  },
-  "metadata": {
-    "lastUpdated": "2025-01-24T10:56:06.000Z",
-    "version": "1.0.0"
+    "directUrl": "https://goo.gl/maps/example"
   }
 }

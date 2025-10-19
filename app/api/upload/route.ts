@@ -17,6 +17,16 @@ export async function POST(request: NextRequest) {
     
     console.log(`📁 Archivo recibido: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`)
     
+    // Validar tamaño para videos
+    const isVideo = file.type.startsWith('video/')
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB para videos, 10MB para imágenes
+    
+    if (file.size > maxSize) {
+      return NextResponse.json({ 
+        error: `Archivo muy grande. Máximo ${isVideo ? '50MB para videos' : '10MB para imágenes'}` 
+      }, { status: 400 })
+    }
+    
     // Generate unique filename
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substr(2, 9)
@@ -53,19 +63,24 @@ export async function POST(request: NextRequest) {
       })
       
     } catch (fsError) {
-      console.warn('⚠️ Error guardando archivo, usando base64 fallback:', fsError)
+      console.warn('⚠️ Error guardando archivo:', fsError)
       
-      // Fallback to base64 if file system fails
+      // Para videos, NO usar base64 fallback ya que es muy pesado
+      if (isVideo) {
+        throw new Error('Error guardando video. Los videos deben guardarse como archivos físicos.')
+      }
+      
+      // Solo para imágenes, usar base64 fallback
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
       const base64 = `data:${file.type};base64,${buffer.toString('base64')}`
       
-      console.log(`✅ Archivo procesado como base64 fallback: ${filename}`)
+      console.log(`✅ Imagen procesada como base64 fallback: ${filename}`)
       
       return NextResponse.json({
         success: true,
         url: base64,
-        type: file.type.startsWith('image/') ? 'image' : 'video',
+        type: 'image',
         filename,
         path: `${folder}/${filename}`
       })
@@ -74,7 +89,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error en API upload:', error)
     return NextResponse.json(
-      { error: 'Error procesando archivo' },
+      { error: error instanceof Error ? error.message : 'Error procesando archivo' },
       { status: 500 }
     )
   }

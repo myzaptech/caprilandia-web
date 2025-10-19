@@ -1,15 +1,17 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import FaviconManager from "@/components/favicon-manager"
 import SafeImage from "@/components/safe-image"
 import SafeVideo from "@/components/safe-video"
+import MediaDiagnostics from "@/components/media-diagnostics"
 import {
   MapPin,
   Phone,
@@ -32,7 +34,6 @@ import {
 import { useContent } from "@/hooks/use-content"
 import { useContentCleanup } from "@/hooks/use-content-cleanup"
 import { useUploadsCleaner } from "@/hooks/use-uploads-cleaner"
-import { useState } from "react"
 
 // Función helper para manejar enlaces de WhatsApp multiplataforma
 const openWhatsApp = (phoneNumber: string, message: string, fallbackMessage?: string) => {
@@ -129,7 +130,8 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
             poster={currentMedia?.thumbnail}
             className="w-full h-full object-cover"
             key={selectedMedia} // Fuerza re-render cuando cambia
-            fallbackMessage={content.ui?.messages.videoNotSupported || "Tu navegador no soporta video HTML5."}
+            controls={true}
+            fallbackMessage={`Video no disponible. URL: ${currentMedia?.url ? currentMedia.url.substring(0, 60) + '...' : 'Sin URL'}`}
           >
             {content.ui?.messages.videoNotSupported || "Tu navegador no soporta video HTML5."}
           </SafeVideo>
@@ -241,7 +243,7 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
       {/* Modal de vista completa */}
       {isModalOpen && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="max-w-6xl max-h-[90vh] p-2">
+          <DialogContent className="max-w-6xl max-h-[90vh] p-2 z-[55]">
             <DialogHeader>
               <DialogTitle className="flex items-center justify-between">
                 <span>{room.name} - {currentMedia?.type === 'video' ? 'Video' : 'Imagen'} {selectedMedia + 1}</span>
@@ -258,6 +260,12 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
                   )}
                 </div>
               </DialogTitle>
+              <DialogDescription>
+                {currentMedia?.type === 'video' 
+                  ? `Reproduciendo video ${selectedMedia + 1} de ${totalMedia} de la galería de ${room.name}`
+                  : `Viendo imagen ${selectedMedia + 1} de ${totalMedia} de la galería de ${room.name}`
+                }
+              </DialogDescription>
             </DialogHeader>
             <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-black">
               {currentMedia?.type === 'video' ? (
@@ -265,10 +273,13 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
                   src={currentMedia?.url}
                   poster={currentMedia?.thumbnail}
                   className="w-full h-full object-contain"
-                  autoPlay
-                  fallbackMessage="Video no disponible"
+                  autoPlay={false}
+                  controls={true}
+                  fallbackMessage={`Video no disponible: ${currentMedia?.alt || 'Sin título'}`}
                 >
-                  Tu navegador no soporta video HTML5.
+                  Tu navegador no soporta video HTML5. 
+                  <br />
+                  URL: {currentMedia?.url ? currentMedia.url.substring(0, 50) + '...' : 'Sin URL'}
                 </SafeVideo>
               ) : (
                 <Image
@@ -298,6 +309,67 @@ export default function HomePage() {
   // Hook para interceptar y limpiar errores 404 de uploads
   const { cleanAllUploads } = useUploadsCleaner()
 
+  // Estado para el botón de limpieza de emergencia
+  const [showCleanupBtn, setShowCleanupBtn] = useState(false)
+  const [isCleaningUploads, setIsCleaningUploads] = useState(false)
+  const [isUpdatingContent, setIsUpdatingContent] = useState(false)
+
+  // Mostrar botón de limpieza después de 5 segundos (en caso de errores persistentes)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCleanupBtn(true)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleEmergencyCleanup = async () => {
+    if (!confirm('¿Limpiar todas las imágenes y videos que no existen? Esto puede mejorar el rendimiento de la página.')) {
+      return
+    }
+    
+    setIsCleaningUploads(true)
+    try {
+      await cleanAllUploads()
+    } catch (error) {
+      console.error('Error en limpieza de emergencia:', error)
+    } finally {
+      setIsCleaningUploads(false)
+    }
+  }
+
+  const handleForceUpdateContent = async () => {
+    if (!confirm('¿Forzar actualización del contenido desde el archivo local? Esto restaurará los videos que no aparecen.')) {
+      return
+    }
+    
+    setIsUpdatingContent(true)
+    try {
+      const response = await fetch('/api/force-update-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        alert(`✅ Contenido actualizado! Se encontraron ${result.videosFound} videos. La página se recargará.`)
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000)
+      } else {
+        alert(`❌ Error: ${result.error}`)
+      }
+      
+    } catch (error) {
+      console.error('Error forzando actualización:', error)
+      alert('❌ Error de red al actualizar contenido')
+    } finally {
+      setIsUpdatingContent(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -313,9 +385,59 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       {/* Favicon Manager */}
       <FaviconManager faviconUrl={content.siteConfig?.favicon} title={content.siteConfig?.title} />
+      
+      {/* Media Diagnostics (solo en desarrollo) */}
+      <MediaDiagnostics />
 
       {/* WhatsApp Floating Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3">
+        {/* Botón de actualización de contenido */}
+        {showCleanupBtn && (
+          <button
+            onClick={handleForceUpdateContent}
+            disabled={isUpdatingContent}
+            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center group relative"
+            title="Restaurar videos desde archivo local"
+          >
+            <div className="flex items-center p-3">
+              {isUpdatingContent ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span className="text-lg">🎬</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-xs font-medium ml-0 group-hover:ml-2 text-xs">
+                    Videos
+                  </span>
+                </>
+              )}
+            </div>
+          </button>
+        )}
+        
+        {/* Botón de limpieza de emergencia */}
+        {showCleanupBtn && (
+          <button
+            onClick={handleEmergencyCleanup}
+            disabled={isCleaningUploads}
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center group relative"
+            title="Limpiar imágenes que no cargan"
+          >
+            <div className="flex items-center p-3">
+              {isCleaningUploads ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span className="text-lg">🧹</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-xs font-medium ml-0 group-hover:ml-2 text-xs">
+                    Limpiar
+                  </span>
+                </>
+              )}
+            </div>
+          </button>
+        )}
+        
+        {/* WhatsApp Button */}
         <button
           onClick={() => {
             const message = "🏨 ¡Hola! Estoy navegando en su página web y me interesa conocer más sobre el Hostal Caprilandia. ¿Podrían ayudarme?";
@@ -659,88 +781,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Location Section - Dynamic from Firebase */}
-      {content.location && (
-        <section className="py-16 lg:py-20 bg-gradient-to-r from-teal-50 to-cyan-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12 lg:mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-teal-700 mb-4">{content.location.title}</h2>
-              <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
-                {content.location.subtitle}
-              </p>
-            </div>
-            
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-              <div>
-                <h3 className="text-2xl font-bold text-teal-700 mb-6">{content.location.whyChooseTitle}</h3>
-                
-                <div className="space-y-4">
-                  {content.location.features.map((feature, index) => (
-                    <div key={index} className="flex items-start space-x-4 p-4 bg-white rounded-lg shadow-sm">
-                      <div className="bg-teal-100 p-2 rounded-full flex-shrink-0">
-                        {feature.icon === "map-pin" && <MapPin className="w-5 h-5 text-teal-600" />}
-                        {feature.icon === "mountain" && <Mountain className="w-5 h-5 text-teal-600" />}
-                        {feature.icon === "home" && <Home className="w-5 h-5 text-teal-600" />}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">{feature.name}</h4>
-                        <p className="text-gray-600 text-sm">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                {content.location.highlight && (
-                  <div className="mt-8 p-6 bg-teal-600 text-white rounded-lg">
-                    <h4 className="font-bold text-lg mb-2">{content.location.highlight.title}</h4>
-                    <p className="text-teal-100 text-sm">
-                      {content.location.highlight.description}
-                    </p>
-                  </div>
-                )}
-              </div>
-              
-              <div className="relative">
-                <SafeImage
-                  src={content.location.image}
-                  alt={content.location.imageAlt || "Vista del pueblo"}
-                  width={600}
-                  height={400}
-                  className="rounded-lg object-cover w-full h-80 lg:h-96"
-                />
-                {content.location.imageCaption && (
-                  <div className="absolute bottom-4 left-4 bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-4 py-2 rounded-lg">
-                    <h3 className="font-bold text-sm lg:text-base">{content.location.imageCaption.title}</h3>
-                    <p className="text-xs lg:text-sm">{content.location.imageCaption.subtitle}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {/* Attractions - Dynamic */}
-            {content.location.attractions && (
-              <div className="mt-16">
-                <h3 className="text-2xl font-bold text-teal-700 mb-8 text-center">{content.location.attractions.title}</h3>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {content.location.attractions.items.map((item, index) => (
-                    <div key={index} className="text-center p-4 bg-white rounded-lg shadow-sm">
-                      <div className="bg-cyan-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        {item.icon === "mountain" && <Mountain className="w-8 h-8 text-cyan-600" />}
-                        {item.icon === "home" && <Home className="w-8 h-8 text-cyan-600" />}
-                        {item.icon === "users" && <Users className="w-8 h-8 text-cyan-600" />}
-                        {item.icon === "utensils-crossed" && <UtensilsCrossed className="w-8 h-8 text-cyan-600" />}
-                      </div>
-                      <h4 className="font-semibold text-gray-900 mb-2">{item.name}</h4>
-                      <p className="text-gray-600 text-sm">{item.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
 
       {/* Rooms Section */}
       <section id="habitaciones" className="py-16 lg:py-20">

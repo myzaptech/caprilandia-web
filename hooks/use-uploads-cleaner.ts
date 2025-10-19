@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react"
 
 interface UploadError {
   url: string
-  type: 'image' | 'video' | 'fetch'
+  type: 'image' | 'video'
   error: Error | Event
 }
 
@@ -12,7 +12,6 @@ interface UploadError {
 const CLEANUP_EVENT = 'uploads-cleanup'
 
 export function useUploadsCleaner() {
-  const originalFetch = useRef<typeof fetch | null>(null)
   const cleanupQueue = useRef<Set<string>>(new Set())
   const cleanupTimeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -42,29 +41,42 @@ export function useUploadsCleaner() {
           detail: { urls: urlsToClean, timestamp: Date.now() }
         }))
 
-        // Llamar a la API de limpieza
+        // Llamar a la API de limpieza usando XMLHttpRequest para evitar problemas
         try {
-          const response = await fetch('/api/cleanup', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              cleanupAll: false,
-              specificUrls: urlsToClean 
-            })
-          })
-
-          const result = await response.json()
-          if (result.success && result.cleaned) {
-            console.log('🧹 Global Cleaner: Cleanup API completed successfully')
-            // Recargar la página para reflejar los cambios
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000)
-          } else {
-            console.log('🧹 Global Cleaner: No changes needed from API')
+          const xhr = new XMLHttpRequest()
+          xhr.open('POST', '/api/cleanup', true)
+          xhr.setRequestHeader('Content-Type', 'application/json')
+          
+          xhr.onload = () => {
+            if (xhr.status === 200) {
+              try {
+                const result = JSON.parse(xhr.responseText)
+                if (result.success && result.cleaned) {
+                  console.log('🧹 Global Cleaner: Cleanup API completed successfully')
+                  // Recargar la página para reflejar los cambios
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 1000)
+                } else {
+                  console.log('🧹 Global Cleaner: No changes needed from API')
+                }
+              } catch (parseError) {
+                console.error('🧹 Global Cleaner: Error parsing API response:', parseError)
+              }
+            } else {
+              console.error('🧹 Global Cleaner: API cleanup failed with status:', xhr.status)
+            }
           }
+          
+          xhr.onerror = () => {
+            console.error('🧹 Global Cleaner: API cleanup network error')
+          }
+          
+          xhr.send(JSON.stringify({ 
+            cleanupAll: false,
+            specificUrls: urlsToClean 
+          }))
+          
         } catch (apiError) {
           console.error('🧹 Global Cleaner: API cleanup failed:', apiError)
         }
@@ -104,30 +116,8 @@ export function useUploadsCleaner() {
   }, [triggerCleanup])
 
   useEffect(() => {
-    // Guardar referencia original del fetch solo una vez
-    if (!originalFetch.current) {
-      originalFetch.current = globalThis.fetch
-    }
-
-    // Interceptar fetch para detectar 404s de uploads
-    globalThis.fetch = async function(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-      const response = await originalFetch.current!(input, init)
-      
-      if (response.status === 404) {
-        const url = typeof input === 'string' ? input : input.toString()
-        if (url.includes('/uploads/')) {
-          const relativeUrl = url.replace(window.location.origin, '')
-          handleUploadError({
-            url: relativeUrl,
-            type: 'fetch',
-            error: new Error(`404 Not Found: ${url}`)
-          })
-        }
-      }
-      
-      return response
-    }
-
+    // Solo interceptar errores de imagen/video, NO fetch para evitar problemas de contexto
+    
     // Interceptar errores de imágenes
     const handleImageError = (event: Event) => {
       const img = event.target as HTMLImageElement
@@ -170,9 +160,6 @@ export function useUploadsCleaner() {
 
     // Cleanup function
     return () => {
-      if (originalFetch.current) {
-        globalThis.fetch = originalFetch.current
-      }
       if (cleanupTimeout.current) {
         clearTimeout(cleanupTimeout.current)
       }
@@ -184,28 +171,41 @@ export function useUploadsCleaner() {
   const cleanAllUploads = useCallback(async () => {
     try {
       console.log('🧹 Global Cleaner: Executing full cleanup of all uploads')
-      const response = await fetch('/api/cleanup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          cleanupAll: true 
-        })
-      })
-
-      const result = await response.json()
-      if (result.success) {
-        console.log('🧹 Global Cleaner: Full cleanup completed')
-        if (result.cleaned) {
-          setTimeout(() => {
-            window.location.reload()
-          }, 1000)
+      
+      // Usar XMLHttpRequest para evitar problemas de contexto
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', '/api/cleanup', true)
+        xhr.setRequestHeader('Content-Type', 'application/json')
+        
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            try {
+              const result = JSON.parse(xhr.responseText)
+              console.log('🧹 Global Cleaner: Full cleanup completed')
+              if (result.cleaned) {
+                setTimeout(() => {
+                  window.location.reload()
+                }, 1000)
+              }
+              resolve(result)
+            } catch (parseError) {
+              reject(new Error('Error parsing API response'))
+            }
+          } else {
+            reject(new Error(`API cleanup failed with status: ${xhr.status}`))
+          }
         }
-        return result
-      } else {
-        throw new Error(result.error || 'Cleanup failed')
-      }
+        
+        xhr.onerror = () => {
+          reject(new Error('Network error during cleanup'))
+        }
+        
+        xhr.send(JSON.stringify({ 
+          cleanupAll: true 
+        }))
+      })
+      
     } catch (error) {
       console.error('🧹 Global Cleaner: Full cleanup failed:', error)
       throw error

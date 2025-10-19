@@ -78,7 +78,7 @@ export default function AdminDashboard() {
   const saveContent = async () => {
     setIsSaving(true)
     try {
-      const result = await saveChanges()
+      const result = await saveChanges(content)
       if (result.success) {
         toast({
           title: "✅ Guardado exitoso",
@@ -152,13 +152,14 @@ export default function AdminDashboard() {
   }
 
   const updateContent = (section: keyof ContentData, field: string, value: any) => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       [section]: {
-        ...prev[section],
+        ...content[section],
         [field]: value,
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   const updateArrayItem = (
@@ -168,24 +169,25 @@ export default function AdminDashboard() {
     field: string,
     value: any,
   ) => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       [section]: {
-        ...prev[section],
-        [arrayField]: (prev[section] as any)[arrayField].map((item: any, i: number) =>
+        ...content[section],
+        [arrayField]: (content[section] as any)[arrayField].map((item: any, i: number) =>
           i === index ? { ...item, [field]: value } : item,
         ),
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   const addTestimonial = () => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       testimonials: {
-        ...prev.testimonials,
+        ...content.testimonials,
         reviews: [
-          ...prev.testimonials.reviews,
+          ...content.testimonials.reviews,
           {
             name: "Nuevo Usuario",
             rating: 5,
@@ -195,26 +197,28 @@ export default function AdminDashboard() {
           },
         ],
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   const removeTestimonial = (index: number) => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       testimonials: {
-        ...prev.testimonials,
-        reviews: prev.testimonials.reviews.filter((_, i) => i !== index),
+        ...content.testimonials,
+        reviews: content.testimonials.reviews.filter((_, i) => i !== index),
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   const addRoom = () => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       rooms: {
-        ...prev.rooms,
+        ...content.rooms,
         rooms: [
-          ...prev.rooms.rooms,
+          ...content.rooms.rooms,
           {
             name: "Nueva Habitación",
             description: "Descripción de la habitación",
@@ -226,17 +230,19 @@ export default function AdminDashboard() {
           },
         ],
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   const removeRoom = (index: number) => {
-    setContent((prev) => ({
-      ...prev,
+    const newContent = {
+      ...content,
       rooms: {
-        ...prev.rooms,
-        rooms: prev.rooms.rooms.filter((_, i) => i !== index),
+        ...content.rooms,
+        rooms: content.rooms.rooms.filter((_, i) => i !== index),
       },
-    }))
+    }
+    setContent(newContent)
   }
 
   if (isLoading || contentLoading) {
@@ -313,7 +319,10 @@ export default function AdminDashboard() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 gap-1">
+          <TabsList className="grid w-full grid-cols-6 lg:grid-cols-10 gap-1">
+            <TabsTrigger value="cleanup" className="text-xs">
+              🧹 Limpieza
+            </TabsTrigger>
             <TabsTrigger value="site" className="text-xs">
               Sitio
             </TabsTrigger>
@@ -342,6 +351,101 @@ export default function AdminDashboard() {
               Contacto
             </TabsTrigger>
           </TabsList>
+
+          {/* Cleanup Section */}
+          <TabsContent value="cleanup">
+            <div className="space-y-6">
+              <Card className="border-orange-200 bg-orange-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-orange-800">
+                    🧹 Limpieza de Archivos
+                  </CardTitle>
+                  <p className="text-orange-700">
+                    Limpia automáticamente las referencias a imágenes y videos que ya no existen en el servidor.
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4">
+                    <div className="bg-white p-4 rounded-lg border">
+                      <h4 className="font-semibold mb-2">🎯 Limpieza Automática</h4>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Detecta y limpia automáticamente archivos que causan errores 404.
+                      </p>
+                      <Button 
+                        onClick={cleanAllUploads} 
+                        disabled={isCleaning}
+                        className="bg-orange-600 hover:bg-orange-700"
+                      >
+                        {isCleaning ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Limpiando...
+                          </>
+                        ) : (
+                          <>
+                            <Eraser className="w-4 h-4 mr-2" />
+                            Limpiar Todos los Uploads
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                      <h4 className="font-semibold mb-2 text-yellow-800">⚠️ Advertencia</h4>
+                      <ul className="text-sm text-yellow-700 space-y-1">
+                        <li>• Esta acción eliminará todas las referencias a archivos que no existen</li>
+                        <li>• Los placeholders aparecerán donde había imágenes rotas</li>
+                        <li>• Es recomendable hacer esto regularmente para mantener el sitio limpio</li>
+                        <li>• El proceso es irreversible, pero puedes volver a subir archivos si es necesario</li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <h4 className="font-semibold mb-2 text-blue-800">🎬 Problemas con Videos</h4>
+                      <p className="text-sm text-blue-700 mb-3">
+                        Si los videos no se reproducen correctamente ("Tu navegador no soporta video HTML5"), 
+                        es probable que estén guardados como base64 en lugar de archivos físicos.
+                      </p>
+                      <Button 
+                        onClick={async () => {
+                          if (confirm('¿Convertir videos base64 a archivos físicos? Esto puede tardar unos minutos.')) {
+                            try {
+                              const response = await fetch('/api/convert-videos', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                              })
+                              const result = await response.json()
+                              if (result.success) {
+                                alert(`✅ Convertidos ${result.converted} videos exitosamente`)
+                                await refreshContent()
+                              } else {
+                                alert(`❌ Error: ${result.error}`)
+                              }
+                            } catch (error) {
+                              alert(`❌ Error en la conversión: ${error}`)
+                            }
+                          }
+                        }}
+                        variant="outline" 
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                      >
+                        🔧 Convertir Videos Base64
+                      </Button>
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <h4 className="font-semibold mb-2 text-blue-800">ℹ️ Información</h4>
+                      <p className="text-sm text-blue-700">
+                        Los errores 404 de archivos se detectan automáticamente en el sitio. 
+                        Después de la limpieza, la página se recargará para mostrar los cambios.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
           {/* Site Configuration Section - NUEVA */}
           <TabsContent value="site">

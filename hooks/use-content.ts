@@ -99,6 +99,12 @@ export interface ContentData {
     title: string
     subtitle: string
     note: string
+    testimonials: Array<{
+      name: string
+      comment: string
+      rating: number
+      date: string
+    }>
     reviews: Array<{
       name: string
       rating: number
@@ -109,10 +115,13 @@ export interface ContentData {
   }
   contact: {
     title: string
+    subtitle: string
     description: string
+    phone: string
     whatsapp: string
     email: string
     address: string
+    hours: string
     socialLinks: {
       facebook: string
       instagram: string
@@ -165,375 +174,174 @@ export interface ContentData {
   }
 }
 
-// Datos por defecto como fallback
+// Contenido por defecto para Firebase-only architecture
 const defaultContent: ContentData = {
   siteConfig: {
     favicon: "",
     logo: "",
-    title: "Hostal Caprilandia - Donde la tradición y la comodidad se encuentran",
-    description:
-      "Descubre la experiencia única del Hostal Caprilandia, un refugio acogedor que combina la calidez de un hogar con la comodidad moderna.",
+    title: "Hostal Caprilandia - Cargando...",
+    description: "Cargando contenido desde Firebase...",
   },
   hero: {
-    title: "Hostal Caprilandia",
-    subtitle: "Donde la tradición y la comodidad se encuentran",
-    backgroundImage:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_afd07f47.jpg-FB6tz2Q2qWXSTPnQVQyvw64Cso6zam.jpeg",
+    title: "Cargando...",
+    subtitle: "Conectando con Firebase",
+    backgroundImage: "",
   },
   about: {
-    title: "Bienvenidos a Caprilandia",
-    description1:
-      "Ubicado en un entorno privilegiado, el Hostal Caprilandia es un refugio acogedor que combina la calidez de un hogar con la comodidad que necesitas para disfrutar de tu estancia.",
-    description2:
-      "Nuestros espacios llenos de color, detalles artesanales y un ambiente familiar crean una experiencia única que te hará sentir como en casa.",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.10.22_95b0216a.jpg-I5MQLmHJbMYdpGnGGhsmTbyeHFBdKI.jpeg",
-    features: [
-      { name: "Ambiente familiar", icon: "users" },
-      { name: "WiFi de alta velocidad", icon: "wifi" },
-      { name: "Ubicación privilegiada", icon: "map-pin" },
-      { name: "Check-in 24/7", icon: "clock" },
-    ],
+    title: "Cargando...",
+    description1: "",
+    description2: "",
+    image: "",
+    features: [],
   },
   rooms: {
-    title: "Muestra de Habitaciones",
-    subtitle:
-      "Descubre nuestros espacios únicos diseñados para brindarte comodidad y una experiencia auténtica durante tu estadía.",
-    rooms: [
-      {
-        name: "Habitación Standard",
-        description: "Ideal para viajeros que buscan comodidad y autenticidad a un precio accesible.",
-        price: "$120/noche",
-        showPrice: true,
-        image:
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-        features: ["1 cama doble", "Baño privado", "WiFi"],
-        popular: false,
-      },
-      {
-        name: "Habitación Superior",
-        description: "Amplio espacio con detalles artesanales y vista a nuestro patio interior.",
-        price: "$180/noche",
-        showPrice: true,
-        image:
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
-        features: ["1 cama king", "Baño con jacuzzi", "Balcón privado"],
-        popular: false,
-      },
-      {
-        name: "Suite Caprilandia",
-        description: "Nuestra suite más exclusiva, con detalles originales y todas las comodidades modernas.",
-        price: "$250/noche",
-        showPrice: true,
-        image:
-          "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
-        features: ["Dormitorio + sala", "Baño completo", "Terraza privada"],
-        popular: false,
-      },
-    ],
+    title: "Cargando habitaciones...",
+    subtitle: "",
+    rooms: [],
   },
   virtualTour: {
-    title: "Tour Virtual",
-    subtitle: "Conoce cada rincón de nuestro hostal Caprilandia a través de este recorrido virtual.",
-    videoUrl: "https://www.youtube.com/embed/73uIlU90th0",
+    title: "Cargando...",
+    subtitle: "",
+    videoUrl: "",
   },
   gallery: {
-    title: "Galería",
-    subtitle: "Un vistazo a los espacios que hacen único a nuestro hostal.",
-    items: [
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
-        alt: "Fachada del hostal",
-      },
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
-        alt: "Detalles arquitectónicos",
-      },
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_d9e82168.jpg-Bh4HBqs7fTTwdijxqviqD08miTn2jX.jpeg",
-        alt: "Área de restaurante",
-      },
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.06_20165b0e.jpg-7CJeiR7FIf0WX0cLbqaGmyctchZOgH.jpeg",
-        alt: "Decoración tradicional",
-      },
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.10.22_95b0216a.jpg-I5MQLmHJbMYdpGnGGhsmTbyeHFBdKI.jpeg",
-        alt: "Vista interior",
-      },
-      {
-        type: "image",
-        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_8ba5e1de.jpg-BDqgTOAKgB9QSVi9n9hfs4CS62JFvR.jpeg",
-        alt: "Letrero Caprilandia",
-      },
-    ],
+    title: "Cargando galería...",
+    subtitle: "",
+    items: [],
   },
   services: {
-    title: "Nuestros Servicios",
-    subtitle: "Más que un lugar para dormir, una experiencia auténtica.",
-    services: [
-      {
-        name: "Habitaciones Confortables",
-        description:
-          "Disfruta de nuestras habitaciones decoradas con un estilo único, combinando comodidad y autenticidad.",
-        icon: "bed",
-      },
-      {
-        name: "Desayuno Casero",
-        description: "Comienza tu día con un desayuno preparado con ingredientes locales y recetas tradicionales.",
-        icon: "utensils-crossed",
-      },
-      {
-        name: "WiFi Gratuito",
-        description: "Mantente conectado durante todo tu estancia con nuestro servicio de internet de alta velocidad.",
-        icon: "wifi",
-      },
-      {
-        name: "Tours Locales",
-        description:
-          "Ofrecemos información y organización de tours para que conozcas los mejores lugares de la región.",
-        icon: "mountain",
-      },
-      {
-        name: "Experiencia Colonial",
-        description: "Sumérgete en la arquitectura y el ambiente colonial que caracteriza nuestro hostal y la región.",
-        icon: "home",
-      },
-      {
-        name: "Áreas Comunes",
-        description:
-          "Disfruta de nuestros espacios compartidos, ideales para relajarte y socializar con otros viajeros.",
-        icon: "users",
-      },
-    ],
+    title: "Cargando servicios...",
+    subtitle: "",
+    services: [],
   },
   testimonials: {
-    title: "Lo que dicen nuestros huéspedes",
-    subtitle: "Experiencias reales de viajeros que han disfrutado de nuestro hostal.",
-    note: "El número de teléfono registrado en Google Maps no está relacionado al establecimiento. Estamos trabajando en solucionar este inconveniente. Para contacto directo, utiliza nuestro WhatsApp oficial.",
-    reviews: [
-      {
-        name: "María González",
-        rating: 5,
-        comment:
-          "Una experiencia auténtica que nos encantó. Cada detalle del hostal respira calidez y encanto. El personal fue excepcionalmente amable y servicial.",
-        initials: "MG",
-        mapLink: "https://g.co/kgs/3c4hdq1",
-      },
-      {
-        name: "John Smith",
-        rating: 5,
-        comment:
-          "El balance perfecto entre autenticidad y comodidad. Nos encantó el ambiente familiar y la decoración única. Volveremos pronto.",
-        initials: "JS",
-        mapLink: "https://g.co/kgs/RXStUEn",
-      },
-      {
-        name: "Ana Rodríguez",
-        rating: 4,
-        comment:
-          "El hostal superó todas nuestras expectativas. La combinación de colores y el ambiente acogedor hacen de este lugar algo especial. Volveremos sin duda.",
-        initials: "AR",
-        mapLink: "https://g.co/kgs/FSxqwfx",
-      },
-    ],
+    title: "Cargando testimonios...",
+    subtitle: "",
+    note: "",
+    testimonials: [],
+    reviews: [],
   },
   contact: {
-    title: "Reserva tu estadía",
-    description:
-      "Estamos disponibles para responder tus preguntas y ayudarte a planificar tu visita. Completa el formulario o contáctanos directamente.",
-    whatsapp: "+57 318 265 8636",
-    email: "info@caprilandia.com",
-    address: "Calle Principal 123, Ciudad, País",
+    title: "Contacto",
+    subtitle: "",
+    description: "",
+    phone: "",
+    whatsapp: "",
+    email: "",
+    address: "",
+    hours: "",
     socialLinks: {
-      facebook: "https://www.facebook.com/people/Hostal-Caprilandia-Ardila/100063707374733/",
-      instagram: "https://www.instagram.com/hostalcaprilandia/",
-      youtube: "https://www.youtube.com/@caprilandia4701",
+      facebook: "",
+      instagram: "",
+      youtube: "",
     },
   },
 }
 
-// Función para migrar formato de galería de images a items
-const migrateGalleryFormat = (data: any): ContentData => {
-  let migratedData = { ...data }
-  
-  // Migración para galería
-  if (!migratedData.gallery?.items) {
-    if (migratedData.gallery?.images) {
-      migratedData.gallery = {
-        ...migratedData.gallery,
-        items: migratedData.gallery.images.map((image: any) => ({
-          type: 'image' as const,
-          url: image.url,
-          alt: image.alt
-        }))
+// Función para migrar formato de galería (legacy support)
+function migrateGalleryFormat(content: any): ContentData {
+  if (!content.gallery?.items) {
+    return content
+  }
+
+  // Verificar si ya está en el nuevo formato
+  const isNewFormat = content.gallery.items.every((item: any) => 
+    item.type && (item.type === 'image' || item.type === 'video')
+  )
+
+  if (isNewFormat) {
+    return content
+  }
+
+  // Migrar formato antiguo al nuevo
+  const migratedItems = content.gallery.items.map((item: any) => {
+    if (typeof item === 'string') {
+      // Item simple como string
+      return {
+        type: 'image' as const,
+        url: item,
+        alt: 'Imagen de galería'
       }
-    } else {
-      migratedData.gallery = defaultContent.gallery
+    }
+    
+    if (item.url) {
+      // Item con estructura pero sin tipo
+      return {
+        type: 'image' as const,
+        url: item.url,
+        alt: item.alt || 'Imagen de galería',
+        thumbnail: item.thumbnail
+      }
+    }
+    
+    return item
+  })
+
+  return {
+    ...content,
+    gallery: {
+      ...content.gallery,
+      items: migratedItems
     }
   }
-  
-  // Migración para habitaciones: convertir image a media array
-  if (migratedData.rooms?.rooms) {
-    migratedData.rooms.rooms = migratedData.rooms.rooms.map((room: any) => {
-      // Si ya tiene media array, mantenerlo
-      if (room.media) {
-        return room
-      }
-      
-      // Si tiene image string, convertir a media array
-      if (room.image) {
-        return {
-          ...room,
-          media: [{
-            type: 'image' as const,
-            url: room.image,
-            alt: room.name || 'Habitación'
-          }]
-        }
-      }
-      
-      // Si no tiene ni image ni media, crear array vacío
-      return {
-        ...room,
-        image: room.image || '',
-        media: []
-      }
-    })
-  }
-  
-  return migratedData as ContentData
 }
 
+// Hook principal para gestión de contenido - Firebase Only
 export function useContent() {
-  const [content, setContentState] = useState<ContentData>(defaultContent)
+  const [content, setContent] = useState<ContentData>(defaultContent)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState(false)
-  const [useLocalStorage, setUseLocalStorage] = useState(false)
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Función para cargar contenido desde localStorage
-  const loadFromLocalStorage = useCallback(() => {
-    try {
-      const stored = localStorage.getItem("hostal-content")
-      if (stored) {
-        const parsedContent = JSON.parse(stored)
-        const migratedContent = migrateGalleryFormat(parsedContent)
-        setContentState(migratedContent)
-        console.log("📱 Contenido cargado desde localStorage")
-        return true
-      }
-    } catch (error) {
-      console.error("Error cargando desde localStorage:", error)
-    }
-    return false
-  }, [])
-
-  // Función para guardar en localStorage
-  const saveToLocalStorage = useCallback((content: ContentData) => {
-    try {
-      localStorage.setItem("hostal-content", JSON.stringify(content))
-      console.log("💾 Contenido guardado en localStorage")
-      return true
-    } catch (error) {
-      console.error("Error guardando en localStorage:", error)
-      return false
-    }
-  }, [])
-
-  // Función para cargar contenido (Firebase o localStorage)
-  const loadContent = useCallback(async () => {
+  // Función para cargar contenido directamente desde Firebase
+  const loadContent = useCallback(async (bustCache: boolean = false) => {
     try {
       setIsLoading(true)
       setError(null)
 
-      // Cargar desde localStorage PRIMERO para mostrar contenido inmediatamente
-      console.log("📱 Cargando desde localStorage para mostrar contenido inmediatamente...")
-      const loadedFromLocal = loadFromLocalStorage()
+      console.log(`🔥 Cargando contenido desde Firebase... ${bustCache ? '(cache busted)' : ''}`)
 
-      if (loadedFromLocal) {
-        // Si hay datos en localStorage, usarlos inmediatamente
-        console.log("✅ Contenido cargado desde localStorage")
-        setIsConnected(false)
-        setUseLocalStorage(true)
-        setError("Contenido local cargado - Intentando conexión con Firebase...")
-        setIsLoading(false) // Mostrar contenido inmediatamente
-      } else {
-        // Si no hay datos locales, usar contenido por defecto inmediatamente
-        console.log("📦 Usando contenido por defecto")
-        setContentState(defaultContent)
-        setIsConnected(false)
-        setUseLocalStorage(true)
-        setError("Contenido por defecto cargado - Intentando conexión con Firebase...")
-        setIsLoading(false) // Mostrar contenido inmediatamente
-      }
+      const url = `/api/content${bustCache ? '?bust=true' : ''}`
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: bustCache ? "no-store" : "default",
+      })
 
-      // Luego intentar cargar desde Firebase en segundo plano
-      try {
-        console.log("🔥 Intentando cargar desde Firebase en segundo plano...")
-
-        const response = await fetch("/api/content", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        })
-
-        if (response.ok) {
-          const result = await response.json()
-          if (result.success && result.data) {
-            // Migrar formato de galería si es necesario
-            const migratedData = migrateGalleryFormat(result.data)
-            setContentState(migratedData)
-            setIsConnected(true)
-            setUseLocalStorage(false)
-            setError(null)
-            // Guardar backup en localStorage
-            saveToLocalStorage(migratedData)
-            console.log("✅ Contenido actualizado desde Firebase")
-            return
-          }
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success && result.data) {
+          // Migrar formato de galería si es necesario
+          const migratedData = migrateGalleryFormat(result.data)
+          setContent(migratedData)
+          setIsConnected(true)
+          setError(null)
+          console.log(`✅ Contenido cargado desde Firebase ${result.cacheInfo?.version ? `(v${result.cacheInfo.version})` : ''}`)
+        } else {
+          throw new Error(result.error || "Error cargando contenido")
         }
-      } catch (firebaseError) {
-        console.warn("⚠️ No se pudo conectar con Firebase:", firebaseError)
-        // Mantener el contenido local que ya se cargó
+      } else {
+        throw new Error(`HTTP Error: ${response.status}`)
       }
     } catch (error) {
-      console.error("❌ Error cargando contenido:", error)
-      // Como último recurso, usar contenido por defecto
-      setContentState(defaultContent)
+      console.error("❌ Error cargando contenido desde Firebase:", error)
       setIsConnected(false)
-      setUseLocalStorage(true)
-      setError("Usando contenido por defecto")
+      setError("Error conectando con Firebase")
+      // No fallback a localStorage - mantener loading state
+    } finally {
       setIsLoading(false)
     }
-  }, [loadFromLocalStorage, saveToLocalStorage])
+  }, [])
 
-  // Función para guardar contenido
+  // Función para guardar contenido directamente en Firebase
   const saveContent = useCallback(
     async (newContent: ContentData) => {
       try {
-        console.log("💾 Guardando contenido...")
+        console.log("💾 Guardando contenido en Firebase...")
 
-        // Si estamos usando localStorage, guardar ahí
-        if (useLocalStorage) {
-          const success = saveToLocalStorage(newContent)
-          if (success) {
-            setError("Guardado en almacenamiento local")
-            return { success: true }
-          } else {
-            throw new Error("Error guardando en localStorage")
-          }
-        }
-
-        // Intentar guardar en Firebase
         const response = await fetch("/api/content", {
           method: "POST",
           headers: {
@@ -543,7 +351,7 @@ export function useContent() {
         })
 
         if (!response.ok) {
-          throw new Error("Error de Firebase, usando localStorage")
+          throw new Error(`HTTP Error: ${response.status}`)
         }
 
         const result = await response.json()
@@ -551,78 +359,48 @@ export function useContent() {
         if (result.success) {
           setIsConnected(true)
           setError(null)
-          // Guardar backup en localStorage también
-          saveToLocalStorage(newContent)
           console.log("✅ Contenido guardado en Firebase")
           return { success: true }
         } else {
           throw new Error(result.error || "Error guardando en Firebase")
         }
       } catch (error) {
-        console.warn("⚠️ Error con Firebase, guardando en localStorage...")
-
-        // Fallback a localStorage
-        const success = saveToLocalStorage(newContent)
+        console.error("❌ Error guardando contenido en Firebase:", error)
         setIsConnected(false)
-        setUseLocalStorage(true)
-
-        if (success) {
-          setError("Guardado en almacenamiento local (Firebase no disponible)")
-          return { success: true }
-        } else {
-          setError("Error guardando contenido")
-          return {
-            success: false,
-            error: "Error guardando contenido",
-          }
+        setError("Error guardando en Firebase")
+        return { 
+          success: false, 
+          error: error instanceof Error ? error.message : "Unknown error"
         }
       }
     },
-    [useLocalStorage, saveToLocalStorage],
+    []
   )
 
-  // Función para actualizar contenido con auto-guardado
-  const setContent = useCallback(
-    (newContent: ContentData | ((prev: ContentData) => ContentData)) => {
-      const updatedContent = typeof newContent === "function" ? newContent(content) : newContent
+  // Función para actualizar contenido con auto-save
+  const updateContent = useCallback(
+    (newContent: ContentData) => {
+      setContent(newContent)
 
-      // Actualizar estado local inmediatamente
-      setContentState(updatedContent)
-
-      // Cancelar auto-guardado anterior si existe
+      // Auto-save después de 2 segundos de inactividad
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current)
       }
 
-      // Programar auto-guardado
-      autoSaveTimeoutRef.current = setTimeout(async () => {
-        console.log("🔄 Auto-guardando...")
-        const result = await saveContent(updatedContent)
-        if (result.success) {
-          console.log("✅ Auto-guardado exitoso")
-        } else {
-          console.error("❌ Error en auto-guardado:", result.error)
-        }
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        saveContent(newContent)
       }, 2000)
-
-      return { success: true }
     },
-    [content, saveContent],
+    [saveContent]
   )
 
-  // Función para guardar cambios manualmente
-  const saveChanges = useCallback(async () => {
-    // Cancelar auto-guardado si está pendiente
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current)
-      autoSaveTimeoutRef.current = null
-    }
+  // Función para refrescar contenido manualmente con cache busting
+  const refreshContent = useCallback(async () => {
+    console.log("🔄 Refrescando contenido con cache busting...")
+    await loadContent(true) // Force cache bust on refresh
+  }, [loadContent])
 
-    const result = await saveContent(content)
-    return result
-  }, [content, saveContent])
-
-  // Cargar contenido al montar el componente
+  // Cargar contenido al inicializar el hook
   useEffect(() => {
     loadContent()
   }, [loadContent])
@@ -636,18 +414,16 @@ export function useContent() {
     }
   }, [])
 
-  // Función para refrescar contenido manualmente
-  const refreshContent = useCallback(() => {
-    return loadContent()
-  }, [loadContent])
-
   return {
     content,
-    setContent,
-    saveChanges,
     isLoading,
     error,
     isConnected,
+    setContent: updateContent, // Alias for backward compatibility
+    updateContent,
+    saveContent,
+    saveChanges: saveContent, // Alias for backward compatibility  
     refreshContent,
+    loadContent,
   }
 }
