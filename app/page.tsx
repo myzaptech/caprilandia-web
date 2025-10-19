@@ -31,6 +31,7 @@ import {
 } from "lucide-react"
 import { useContent } from "@/hooks/use-content"
 import { useContentCleanup } from "@/hooks/use-content-cleanup"
+import { useUploadsCleaner } from "@/hooks/use-uploads-cleaner"
 import { useState } from "react"
 
 // Función helper para manejar enlaces de WhatsApp multiplataforma
@@ -293,6 +294,9 @@ export default function HomePage() {
 
   // Hook para limpiar URLs de uploads que no existen
   useContentCleanup(content, setContent)
+  
+  // Hook para interceptar y limpiar errores 404 de uploads
+  const { cleanAllUploads } = useUploadsCleaner()
 
   if (isLoading) {
     return (

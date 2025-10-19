@@ -17,17 +17,6 @@
       "static/chunks/481-69c80b94905ebf78.js",
       "static/chunks/app/layout-e879fed722778574.js"
     ],
-    "/admin/login/page": [
-      "static/chunks/webpack-59963277a198d9ab.js",
-      "static/chunks/fd9d1056-3750f1c68fb99acb.js",
-      "static/chunks/117-044bfa77bbf6bb31.js",
-      "static/chunks/main-app-c215828daca31d18.js",
-      "static/chunks/7508b87c-fe49f57af9c89944.js",
-      "static/chunks/261b60bd-117c555c59e090f8.js",
-      "static/chunks/569-54c4b709275c402b.js",
-      "static/chunks/365-77e3693133ff3e2b.js",
-      "static/chunks/app/admin/login/page-ec78dd629ffccf34.js"
-    ],
     "/admin/dashboard/page": [
       "static/chunks/webpack-59963277a198d9ab.js",
       "static/chunks/fd9d1056-3750f1c68fb99acb.js",
@@ -39,9 +28,20 @@
       "static/chunks/365-77e3693133ff3e2b.js",
       "static/chunks/481-69c80b94905ebf78.js",
       "static/chunks/812-7e0677db89342767.js",
-      "static/chunks/118-8464986f9e243f13.js",
+      "static/chunks/352-fb9870924f2f8837.js",
       "static/chunks/170-3513b035087b853c.js",
-      "static/chunks/app/admin/dashboard/page-155e9c86bb122075.js"
+      "static/chunks/app/admin/dashboard/page-e371b0e856d81cc2.js"
+    ],
+    "/admin/login/page": [
+      "static/chunks/webpack-59963277a198d9ab.js",
+      "static/chunks/fd9d1056-3750f1c68fb99acb.js",
+      "static/chunks/117-044bfa77bbf6bb31.js",
+      "static/chunks/main-app-c215828daca31d18.js",
+      "static/chunks/7508b87c-fe49f57af9c89944.js",
+      "static/chunks/261b60bd-117c555c59e090f8.js",
+      "static/chunks/569-54c4b709275c402b.js",
+      "static/chunks/365-77e3693133ff3e2b.js",
+      "static/chunks/app/admin/login/page-ec78dd629ffccf34.js"
     ],
     "/test-firebase/page": [
       "static/chunks/webpack-59963277a198d9ab.js",
@@ -64,7 +64,7 @@
       "static/chunks/812-7e0677db89342767.js",
       "static/chunks/380-dd2399362c336d30.js",
       "static/chunks/170-3513b035087b853c.js",
-      "static/chunks/app/page-7288b53199e0523f.js"
+      "static/chunks/app/page-caba5b369230a602.js"
     ]
   }
 }

@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Save, LogOut, Trash2, Plus, Star, RefreshCw, AlertCircle, Zap, Shield, User } from "lucide-react"
+import { Save, LogOut, Trash2, Plus, Star, RefreshCw, AlertCircle, Zap, Shield, User, Eraser } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import { useContent, type ContentData } from "@/hooks/use-content"
 import { signOutAdmin, onAuthStateChange, isCurrentUserAdmin } from "@/lib/firebase-auth"
@@ -99,6 +99,55 @@ export default function AdminDashboard() {
       })
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const [isCleaning, setIsCleaning] = useState(false)
+
+  const cleanAllUploads = async () => {
+    if (!confirm("¿Estás seguro? Esto limpiará TODAS las referencias a archivos de uploads inexistentes.")) {
+      return
+    }
+
+    setIsCleaning(true)
+    try {
+      const response = await fetch('/api/cleanup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          cleanupAll: true 
+        })
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        if (result.cleaned) {
+          toast({
+            title: "🧹 Limpieza completada",
+            description: "Se han limpiado todas las referencias a archivos inexistentes.",
+          })
+          // Refrescar el contenido
+          await refreshContent()
+        } else {
+          toast({
+            title: "ℹ️ Sin cambios",
+            description: "No se encontraron referencias a archivos para limpiar.",
+          })
+        }
+      } else {
+        throw new Error(result.error || 'Error en la limpieza')
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Error en limpieza",
+        description: "No se pudo completar la limpieza de archivos.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsCleaning(false)
     }
   }
 
@@ -236,6 +285,10 @@ export default function AdminDashboard() {
               <Button onClick={refreshContent} variant="outline" size="sm" disabled={contentLoading}>
                 <RefreshCw className={`w-4 h-4 mr-2 ${contentLoading ? "animate-spin" : ""}`} />
                 Actualizar
+              </Button>
+              <Button onClick={cleanAllUploads} variant="outline" size="sm" disabled={isCleaning}>
+                <Eraser className={`w-4 h-4 mr-2 ${isCleaning ? "animate-spin" : ""}`} />
+                {isCleaning ? "Limpiando..." : "Limpiar Uploads"}
               </Button>
               <Button onClick={saveContent} className="bg-teal-600 hover:bg-teal-700" size="sm" disabled={isSaving}>
                 <Save className={`w-4 h-4 mr-2 ${isSaving ? "animate-spin" : ""}`} />
