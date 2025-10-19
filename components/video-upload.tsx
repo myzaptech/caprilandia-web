@@ -59,10 +59,13 @@ export default function VideoUpload({
         if (thumbnail && onThumbnailChange) {
           console.log(`🖼️ Generando thumbnail para video...`)
           
-          // Convertir thumbnail base64 a File para subirlo a Firebase Storage
+          // Convertir thumbnail blob URL a File para subirlo a Firebase Storage
           const response = await fetch(thumbnail)
           const blob = await response.blob()
-          const thumbnailFile = new File([blob], `thumbnail_${file.name}.jpg`, { type: 'image/jpeg' })
+          const thumbnailFile = new File([blob], `thumbnail_${file.name.replace(/\.[^/.]+$/, '')}.jpg`, { type: 'image/jpeg' })
+          
+          // Limpiar el blob URL temporal para liberar memoria
+          URL.revokeObjectURL(thumbnail)
           
           // Subir thumbnail a Firebase Storage
           const thumbnailResult = await FirebaseStorageManager.uploadFile(thumbnailFile, 'thumbnails')
@@ -97,8 +100,16 @@ export default function VideoUpload({
       video.onseeked = () => {
         if (ctx) {
           ctx.drawImage(video, 0, 0)
-          const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.8)
-          resolve(thumbnailUrl)
+          
+          // Convertir canvas a blob en lugar de data URL para evitar problemas CSP
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const blobUrl = URL.createObjectURL(blob)
+              resolve(blobUrl)
+            } else {
+              resolve('')
+            }
+          }, 'image/jpeg', 0.8)
         }
       }
       
