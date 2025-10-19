@@ -1,6 +1,7 @@
-import { initializeApp, getApps } from "firebase/app"
-import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
+import { initializeApp, getApps, FirebaseApp } from "firebase/app"
+import { getFirestore, Firestore } from "firebase/firestore"
+import { getAuth, Auth } from "firebase/auth"
+import { getStorage, FirebaseStorage } from "firebase/storage"
 
 // Firebase configuration - configuración para producción
 // Usamos credenciales hardcodeadas que tienen prioridad sobre variables de entorno
@@ -15,15 +16,16 @@ const firebaseConfig = {
 }
 
 // Verificar que Firebase no esté ya inicializado (evita errores en desarrollo)
-let app
+let app: FirebaseApp
 if (getApps().length === 0) {
   app = initializeApp(firebaseConfig)
 } else {
   app = getApps()[0]
 }
 
-let db
-let auth
+let db: Firestore | null = null
+let auth: Auth | null = null
+let storage: FirebaseStorage | null = null
 
 try {
   // Initialize Cloud Firestore and get a reference to the service
@@ -31,6 +33,9 @@ try {
   
   // Initialize Firebase Authentication
   auth = getAuth(app)
+  
+  // Initialize Firebase Storage
+  storage = getStorage(app)
   
   // Log de confirmación (solo en desarrollo)
   if (process.env.NODE_ENV === "development") {
@@ -41,7 +46,8 @@ try {
   // Crear objetos fallback para evitar errores
   db = null
   auth = null
+  storage = null
 }
 
-export { db, auth }
+export { db, auth, storage }
 export default app

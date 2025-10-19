@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                 <h1 className="text-xl font-bold text-gray-900">Panel de Administración</h1>
                 <div className="flex items-center space-x-2">
                   <Badge variant="secondary" className="text-xs">
-                    📱 Almacenamiento Local
+                    ☁️ Firebase Storage
                   </Badge>
                   <Badge className="text-xs bg-green-100 text-green-800">
                     <Zap className="w-3 h-3 mr-1" />

@@ -1,0 +1,38 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    // DESARROLLO: Permitir todo temporalmente para resolver CORS
+    // ⚠️ TODO: Restringir en producción
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+    
+    // Reglas específicas por carpeta para mejor organización
+    
+    // Carpeta de imágenes - lectura pública, escritura para autenticados
+    match /images/{imageId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Carpeta de videos - lectura pública, escritura para autenticados  
+    match /videos/{videoId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Carpeta de thumbnails - lectura pública, escritura para autenticados
+    match /thumbnails/{thumbnailId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Carpeta media general - lectura pública, escritura para autenticados
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

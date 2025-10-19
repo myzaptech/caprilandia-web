@@ -6,6 +6,7 @@ import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Upload, X, VideoIcon, Play } from "lucide-react"
+import { FirebaseStorageManager } from "@/lib/firebase-storage"
 
 interface VideoUploadProps {
   currentVideo?: string
@@ -44,23 +45,37 @@ export default function VideoUpload({
     setIsUploading(true)
 
     try {
-      // Convertir video a base64 para almacenamiento local
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        onVideoChange(result)
-        
-        // Generar thumbnail del video si es posible
-        generateThumbnail(file).then(thumbnail => {
-          if (thumbnail && onThumbnailChange) {
-            onThumbnailChange(thumbnail)
-          }
-        })
+      console.log(`🚀 Subiendo video a Firebase Storage: ${file.name}`)
+      
+      // Subir video a Firebase Storage
+      const result = await FirebaseStorageManager.uploadFile(file, 'videos')
+      
+      console.log(`✅ Video subido exitosamente: ${result.url}`)
+      onVideoChange(result.url)
+      
+      // Generar thumbnail del video si es posible
+      try {
+        const thumbnail = await generateThumbnail(file)
+        if (thumbnail && onThumbnailChange) {
+          console.log(`🖼️ Generando thumbnail para video...`)
+          
+          // Convertir thumbnail base64 a File para subirlo a Firebase Storage
+          const response = await fetch(thumbnail)
+          const blob = await response.blob()
+          const thumbnailFile = new File([blob], `thumbnail_${file.name}.jpg`, { type: 'image/jpeg' })
+          
+          // Subir thumbnail a Firebase Storage
+          const thumbnailResult = await FirebaseStorageManager.uploadFile(thumbnailFile, 'thumbnails')
+          console.log(`✅ Thumbnail subido exitosamente: ${thumbnailResult.url}`)
+          onThumbnailChange(thumbnailResult.url)
+        }
+      } catch (thumbnailError) {
+        console.warn("⚠️ No se pudo generar thumbnail:", thumbnailError)
+        // No es crítico si falla el thumbnail
       }
-      reader.readAsDataURL(file)
     } catch (error) {
-      console.error("Error subiendo video:", error)
-      alert("Error al subir el video")
+      console.error("❌ Error subiendo video:", error)
+      alert(`Error al subir el video: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     } finally {
       setIsUploading(false)
     }

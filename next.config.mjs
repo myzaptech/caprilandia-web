@@ -3,6 +3,11 @@ const nextConfig = {
   // Configuración básica
   poweredByHeader: false,
   
+  // Configuración del servidor de desarrollo
+  experimental: {
+    serverComponentsExternalPackages: ['firebase-admin'],
+  },
+  
   // Headers de seguridad
   async headers() {
     return [
@@ -27,7 +32,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.youtube.com *.google.com *.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; img-src 'self' data: blob: *.vercel-storage.com *.v0.dev; frame-src 'self' *.youtube.com *.google.com; connect-src 'self' *.vercel.app *.googleapis.com *.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; font-src 'self' fonts.gstatic.com;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.youtube.com *.google.com *.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; img-src 'self' data: blob: *.vercel-storage.com *.v0.dev *.firebasestorage.app; media-src 'self' data: blob: *.firebasestorage.app; frame-src 'self' *.youtube.com *.google.com; connect-src 'self' *.vercel.app *.googleapis.com *.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com; font-src 'self' fonts.gstatic.com;"
           },
           {
             key: 'Permissions-Policy',

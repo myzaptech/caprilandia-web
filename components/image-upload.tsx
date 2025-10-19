@@ -7,6 +7,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Upload, X, ImageIcon } from "lucide-react"
+import { FirebaseStorageManager } from "@/lib/firebase-storage"
 
 interface ImageUploadProps {
   currentImage?: string
@@ -45,21 +46,17 @@ export default function ImageUpload({
     setIsUploading(true)
 
     try {
-      // Convertir imagen a base64 para almacenamiento local
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        onImageChange(result)
-        setIsUploading(false)
-      }
-      reader.onerror = () => {
-        alert("Error al leer el archivo")
-        setIsUploading(false)
-      }
-      reader.readAsDataURL(file)
+      console.log(`🚀 Subiendo imagen a Firebase Storage: ${file.name}`)
+      
+      // Subir imagen a Firebase Storage
+      const result = await FirebaseStorageManager.uploadFile(file, 'images')
+      
+      console.log(`✅ Imagen subida exitosamente: ${result.url}`)
+      onImageChange(result.url)
     } catch (error) {
-      console.error("Error subiendo imagen:", error)
-      alert("Error al procesar la imagen")
+      console.error("❌ Error subiendo imagen:", error)
+      alert(`Error al subir la imagen: ${error instanceof Error ? error.message : 'Error desconocido'}`)
+    } finally {
       setIsUploading(false)
     }
   }
