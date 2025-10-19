@@ -28,8 +28,29 @@ function getYouTubeEmbedUrl(url: string): string | null {
   for (const pattern of regexPatterns) {
     const match = url.match(pattern)
     if (match) {
-      // Usar youtube-nocookie.com para mejor privacidad
-      return `https://www.youtube-nocookie.com/embed/${match[1]}?rel=0`
+      const videoId = match[1]
+      // Usar youtube-nocookie.com para mejor privacidad y menos restricciones
+      // Agregar parámetros para evitar problemas de embedding
+      return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0&controls=1`
+    }
+  }
+  
+  return null
+}
+
+// Función para verificar si un video de YouTube puede ser embebido
+function getYouTubeVideoId(url: string): string | null {
+  const regexPatterns = [
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?]+)/,
+    /(?:https?:\/\/)?(?:www\.)?youtube-nocookie\.com\/embed\/([^?]+)/
+  ]
+  
+  for (const pattern of regexPatterns) {
+    const match = url.match(pattern)
+    if (match) {
+      return match[1]
     }
   }
   
@@ -90,6 +111,7 @@ export default function SafeVideo({
   const [hasError, setHasError] = useState(false)
   const [videoSrc, setVideoSrc] = useState(src ? normalizeVideoUrl(src) : src)
   const [isChecking, setIsChecking] = useState(false)
+  const [youtubeError, setYoutubeError] = useState(false)
 
   // Debug logging (solo en desarrollo)
   if (process.env.NODE_ENV === 'development') {
@@ -104,6 +126,8 @@ export default function SafeVideo({
     // Si es YouTube, log adicional
     if (src && isYouTubeUrl(src)) {
       console.log(`📺 Detectado video de YouTube: ${src}`)
+      const videoId = getYouTubeVideoId(src)
+      console.log(`📺 YouTube Video ID: ${videoId}`)
     }
     
     // Si es video local, log adicional
@@ -137,21 +161,50 @@ export default function SafeVideo({
     if (src) {
       setVideoSrc(normalizeVideoUrl(src))
       setHasError(false)
+      setYoutubeError(false)
+    }
+  }, [src])
+
+  // Detectar errores de X-Frame-Options para YouTube
+  useEffect(() => {
+    if (src && isYouTubeUrl(src)) {
+      // Escuchar errores de console para detectar X-Frame-Options
+      const originalError = console.error
+      console.error = (...args) => {
+        const errorMessage = args.join(' ')
+        if (errorMessage.includes('X-Frame-Options') || errorMessage.includes('sameorigin')) {
+          console.warn(`🚫 YouTube video bloqueado por X-Frame-Options: ${src}`)
+          setYoutubeError(true)
+        }
+        originalError.apply(console, args)
+      }
+
+      // Cleanup
+      return () => {
+        console.error = originalError
+      }
     }
   }, [src])
 
   // Si no hay src o está vacío, mostrar mensaje de fallback
   if (!src || src.trim() === "") {
     return (
-      <div className={`bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center ${className}`}>
-        <div className="text-center p-8">
-          <div className="text-gray-400 mb-2">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={`bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-gray-400 mb-4">
+            <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z" />
             </svg>
           </div>
-          <p className="text-gray-500 text-sm">{fallbackMessage}</p>
-          <p className="text-xs text-gray-400 mt-1">No se proporcionó URL de video</p>
+          <h3 className="text-lg font-bold text-gray-600 mb-2">📹 Sin video configurado</h3>
+          <p className="text-gray-500 text-sm mb-2">{fallbackMessage}</p>
+          <p className="text-xs text-gray-400">No se proporcionó URL de video</p>
+          
+          <div className="mt-4 p-3 bg-white/70 rounded border border-gray-200">
+            <p className="text-xs text-gray-500">
+              Estado: <span className="font-mono">Sin fuente de video</span>
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -160,12 +213,25 @@ export default function SafeVideo({
   // Si está verificando o tiene error, mostrar estado correspondiente
   if (isChecking) {
     return (
-      <div className={`bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center ${className}`}>
-        <div className="text-center p-8">
-          <div className="text-gray-400 mb-2">
-            <div className="w-8 h-8 mx-auto border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+      <div className={`bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-lg flex items-center justify-center ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-blue-500 mb-4">
+            <div className="relative w-16 h-16 mx-auto">
+              <div className="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
           </div>
-          <p className="text-gray-500 text-sm">Verificando video...</p>
+          <h3 className="text-lg font-bold text-blue-700 mb-2">🔍 Verificando video...</h3>
+          <p className="text-blue-600 text-sm">
+            Comprobando disponibilidad del archivo
+          </p>
+          <div className="mt-4 flex justify-center">
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -173,26 +239,42 @@ export default function SafeVideo({
 
   if (hasError) {
     return (
-      <div className={`bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center ${className}`}>
-        <div className="text-center p-8">
-          <div className="text-gray-400 mb-2">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      <div className={`bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-lg flex items-center justify-center ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-orange-500 mb-4">
+            <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-          <p className="text-gray-500 text-sm">{fallbackMessage}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            Error: {src.length > 50 ? src.substring(0, 50) + '...' : src}
+          <h3 className="text-xl font-bold text-orange-700 mb-2">🎥 Video no disponible</h3>
+          <p className="text-orange-600 text-sm mb-2 font-medium">
+            No se pudo cargar el video
           </p>
-          <button
-            onClick={() => {
-              setHasError(false)
-              if (src) setVideoSrc(normalizeVideoUrl(src))
-            }}
-            className="mt-2 px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600"
-          >
-            Reintentar
-          </button>
+          <p className="text-gray-600 text-xs mb-4">
+            El archivo de video puede estar dañado o no existe en el servidor.
+          </p>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => {
+                setHasError(false)
+                if (src) setVideoSrc(normalizeVideoUrl(src))
+              }}
+              className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-all transform hover:scale-105 shadow-lg"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              🔄 Reintentar
+            </button>
+          </div>
+          
+          <div className="mt-4 p-3 bg-white/70 rounded border border-orange-200">
+            <p className="text-xs text-gray-600 break-all">
+              <span className="font-mono">URL:</span> {src.length > 50 ? src.substring(0, 50) + '...' : src}
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -200,8 +282,9 @@ export default function SafeVideo({
 
   // Verificar si es un video de YouTube
   const youtubeEmbedUrl = getYouTubeEmbedUrl(src)
+  const youtubeVideoId = getYouTubeVideoId(src)
   
-  if (youtubeEmbedUrl) {
+  if (youtubeEmbedUrl && !youtubeError) {
     return (
       <div className={`relative ${className}`}>
         <iframe
@@ -211,16 +294,95 @@ export default function SafeVideo({
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           style={{ border: 0 }}
-          onLoad={() => {
+          onLoad={(e) => {
             if (process.env.NODE_ENV === 'development') {
-              console.log(`✅ YouTube video cargado: ${src}`)
+              console.log(`✅ YouTube iframe cargado: ${src}`)
             }
+            
+            // Verificar si el iframe realmente cargó contenido
+            setTimeout(() => {
+              try {
+                const iframe = e.target as HTMLIFrameElement
+                // Si el iframe está vacío o no responde, probablemente fue bloqueado
+                if (!iframe.contentDocument && !iframe.contentWindow) {
+                  console.warn(`🚫 YouTube iframe posiblemente bloqueado: ${src}`)
+                  setYoutubeError(true)
+                }
+              } catch (error) {
+                // Cross-origin error es normal, pero si hay otros errores...
+                if (process.env.NODE_ENV === 'development') {
+                  console.log(`ℹ️ Cross-origin restriction (normal): ${src}`)
+                }
+              }
+            }, 2000)
           }}
           onError={(e) => {
-            console.warn(`❌ Error cargando YouTube video: ${src}`, e)
-            setHasError(true)
+            console.warn(`❌ Error directo en iframe de YouTube: ${src}`, e)
+            setYoutubeError(true)
           }}
         />
+        
+        {/* Timeout para detectar bloqueo por X-Frame-Options */}
+        {(() => {
+          setTimeout(() => {
+            // Si después de 5 segundos no se ha cargado correctamente, asumir que está bloqueado
+            const checkBlocked = () => {
+              if (!youtubeError) {
+                console.warn(`⏰ YouTube iframe timeout - posible bloqueo X-Frame-Options: ${src}`)
+                // No establecer error automáticamente, solo log
+              }
+            }
+            checkBlocked()
+          }, 5000)
+          return null
+        })()}
+      </div>
+    )
+  }
+  
+  // Si YouTube falló, mostrar enlace directo mejorado
+  if (youtubeEmbedUrl && youtubeError && youtubeVideoId) {
+    return (
+      <div className={`bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 rounded-lg flex items-center justify-center ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-red-500 mb-4">
+            <svg className="w-20 h-20 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-red-700 mb-2">🎬 Video de YouTube</h3>
+          <p className="text-red-600 text-sm mb-2 font-medium">
+            Video protegido contra incrustación
+          </p>
+          <p className="text-gray-600 text-xs mb-4">
+            Este video no se puede mostrar aquí debido a las restricciones de privacidad de YouTube.
+          </p>
+          
+          <div className="space-y-3">
+            <a
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all transform hover:scale-105 shadow-lg"
+            >
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+              ▶️ Ver en YouTube
+            </a>
+            
+            <button
+              onClick={() => setYoutubeError(false)}
+              className="block mx-auto px-4 py-2 text-sm text-red-600 hover:text-red-800 transition-colors"
+            >
+              🔄 Intentar de nuevo
+            </button>
+          </div>
+          
+          <div className="mt-4 p-3 bg-white/70 rounded border border-red-200">
+            <p className="text-xs text-gray-600 font-mono">ID: {youtubeVideoId}</p>
+          </div>
+        </div>
       </div>
     )
   }
