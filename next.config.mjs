@@ -32,7 +32,7 @@ const nextConfig = {
     } : false,
   },
 
-  // Webpack personalizado para ofuscación
+  // Webpack personalizado para ofuscación y chunk handling
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
       // Configuración para ofuscar en producción
@@ -42,9 +42,38 @@ const nextConfig = {
       
       // Renombrar variables y funciones
       config.optimization.mangleExports = true
+
+      // Configuración mejorada de chunks para evitar errores de carga
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: -10,
+            chunks: 'all',
+          },
+        },
+      }
     }
     
     return config
+  },
+
+  // Configuración para generar build ID consistente basado en contenido
+  generateBuildId: async () => {
+    // Generar build ID basado en timestamp y contenido para forzar updates
+    const timestamp = Date.now()
+    return `build-${timestamp}`
   },
 
   // Ignorar errores durante la construcción

@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import FaviconManager from "@/components/favicon-manager"
+import { ChunkErrorHandler } from "./chunk-error-handler"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -115,6 +116,7 @@ export default function RootLayout({
         <FaviconManager />
       </head>
       <body className={inter.className}>
+        <ChunkErrorHandler />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />

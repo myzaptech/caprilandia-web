@@ -13,6 +13,27 @@ export function middleware(request: NextRequest) {
 
   // Crear respuesta
   const response = NextResponse.next()
+
+  // Headers especiales para chunks de Next.js para prevenir errores de chunk loading
+  if (pathname.startsWith('/_next/static/chunks/')) {
+    // Immutable caching para chunks con hash (nunca cambian)
+    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable')
+    return response
+  }
+
+  // Headers para archivos estáticos generales
+  if (pathname.startsWith('/_next/static/')) {
+    // Cache más agresivo para assets estáticos
+    response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400')
+    return response
+  }
+
+  // Headers para el HTML principal para evitar cache de versiones obsoletas
+  if (pathname === '/' || pathname.startsWith('/admin') || !pathname.includes('.')) {
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+  }
   
   // CSP simplificado sin nonce para evitar conflictos con Next.js
   const csp = [
