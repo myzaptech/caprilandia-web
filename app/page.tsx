@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import FaviconManager from "@/components/favicon-manager"
+import SafeImage from "@/components/safe-image"
 import {
   MapPin,
   Phone,
@@ -28,6 +29,7 @@ import {
   Eye
 } from "lucide-react"
 import { useContent } from "@/hooks/use-content"
+import { useContentCleanup } from "@/hooks/use-content-cleanup"
 import { useState } from "react"
 
 // Función helper para manejar enlaces de WhatsApp multiplataforma
@@ -286,7 +288,10 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
 }
 
 export default function HomePage() {
-  const { content, isLoading } = useContent()
+  const { content, isLoading, setContent } = useContent()
+
+  // Hook para limpiar URLs de uploads que no existen
+  useContentCleanup(content, setContent)
 
   if (isLoading) {
     return (
@@ -613,8 +618,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="relative order-2 lg:order-1">
-              <Image
-                src={content.about.image || "/placeholder.svg"}
+              <SafeImage
+                src={content.about.image}
                 alt="Interior del hostal"
                 width={600}
                 height={400}
@@ -692,8 +697,8 @@ export default function HomePage() {
               </div>
               
               <div className="relative">
-                <Image
-                  src={content.location.image || "/placeholder.svg"}
+                <SafeImage
+                  src={content.location.image}
                   alt={content.location.imageAlt || "Vista del pueblo"}
                   width={600}
                   height={400}
@@ -743,7 +748,12 @@ export default function HomePage() {
             {content.rooms.rooms.map((room, index) => (
               <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-64">
-                  <Image src={room.image || "/placeholder.svg"} alt={room.name} fill className="object-cover" />
+                  <SafeImage 
+                    src={room.image} 
+                    alt={room.name} 
+                    fill 
+                    className="object-cover" 
+                  />
                   {/* Solo mostrar precio si showPrice es true y price existe */}
                   {room.showPrice && room.price && (
                     <div className="absolute top-4 right-4 bg-teal-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -836,8 +846,8 @@ export default function HomePage() {
               >
                 <div className="relative">
                   {item.type === 'image' ? (
-                    <Image
-                      src={item.url || "/placeholder.svg"}
+                    <SafeImage
+                      src={item.url}
                       alt={item.alt}
                       width={400}
                       height={300}

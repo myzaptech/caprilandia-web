@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Manejar archivos de uploads que no existen
+  if (pathname.startsWith('/uploads/')) {
+    // Intentar servir el archivo normalmente
+    // Si no existe, Next.js automáticamente devuelve 404
+    // Esto lo capturaremos en el componente SafeImage
+  }
+
   // Crear respuesta
   const response = NextResponse.next()
   
