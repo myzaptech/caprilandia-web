@@ -185,7 +185,7 @@ export default function AdminLogin() {
             </form>
 
             {/* Información de configuración */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            {/* <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h3 className="text-sm font-semibold text-blue-800 mb-2">🔧 Configuración requerida:</h3>
               <ol className="text-xs text-blue-700 space-y-1">
                 <li>1. Crear usuario admin en Firebase Console</li>
@@ -193,10 +193,10 @@ export default function AdminLogin() {
                 <li>3. Configurar reglas de Firestore</li>
                 <li>4. Habilitar Authentication con Email/Password</li>
               </ol>
-            </div>
+            </div> */}
 
             {/* Credenciales de prueba */}
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            {/* <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 text-center mb-2">
                 <strong>Credenciales de prueba:</strong>
               </p>
@@ -206,7 +206,7 @@ export default function AdminLogin() {
               <p className="text-xs text-gray-500 text-center">
                 Contraseña: <code className="bg-gray-200 px-1 rounded">CaprilandiaAdmin2025!</code>
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 

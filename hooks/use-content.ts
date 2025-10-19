@@ -24,6 +24,34 @@ export interface ContentData {
       icon: string
     }>
   }
+  location?: {
+    title: string
+    subtitle: string
+    whyChooseTitle: string
+    features: Array<{
+      name: string
+      description: string
+      icon: string
+    }>
+    highlight: {
+      title: string
+      description: string
+    }
+    image: string
+    imageAlt: string
+    imageCaption: {
+      title: string
+      subtitle: string
+    }
+    attractions: {
+      title: string
+      items: Array<{
+        name: string
+        description: string
+        icon: string
+      }>
+    }
+  }
   rooms: {
     title: string
     subtitle: string
@@ -90,6 +118,50 @@ export interface ContentData {
       instagram: string
       youtube: string
     }
+  }
+  footer?: {
+    description: string
+    copyright: string
+    tagline: string
+  }
+  ui?: {
+    navigation: {
+      home: string
+      rooms: string
+      gallery: string
+      services: string
+      contact: string
+      book: string
+    }
+    buttons: {
+      viewRooms: string
+      bookNow: string
+      book: string
+      checkAvailability: string
+      viewGallery: string
+      sendWhatsApp: string
+    }
+    messages: {
+      noGallery: string
+      noGalleryItems: string
+      videoNotSupported: string
+      videoNotSupportedFull: string
+      fileCount: string
+    }
+    labels: {
+      galleryOf: string
+      video: string
+      image: string
+      of: string
+    }
+  }
+  map?: {
+    latitude: string
+    longitude: string
+    zoom: string
+    title: string
+    embedUrl: string
+    directUrl: string
   }
 }
 

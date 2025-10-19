@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://caprilandia.com/sitemap.xml
+
+# Páginas específicas para Caprilandia
+Allow: /
+Allow: /#inicio
+Allow: /#habitaciones  
+Allow: /#galeria
+Allow: /#servicios
+Allow: /#contacto
+
+# Optimización para búsquedas de Caprilandia y Zapatoca
+# Este sitio está optimizado para búsquedas de:
+# - caprilandia
+# - hostal caprilandia
+# - hostal zapatoca
+# - hostales en zapatoca
+# - alojamiento zapatoca
+# - hotel zapatoca
+# - hospedaje zapatoca
+# - turismo zapatoca
+# - hostal santander
