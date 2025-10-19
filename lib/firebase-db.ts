@@ -7,6 +7,13 @@ const COLLECTION_NAME = "hostal-data"
 
 // Datos por defecto
 const getDefaultContent = (): ContentData => ({
+  siteConfig: {
+    favicon: "",
+    logo: "",
+    title: "Hostal Caprilandia - Donde la tradición y la comodidad se encuentran",
+    description:
+      "Descubre la experiencia única del Hostal Caprilandia, un refugio acogedor que combina la calidez de un hogar con la comodidad moderna.",
+  },
   hero: {
     title: "Hostal Caprilandia",
     subtitle: "Donde la tradición y la comodidad se encuentran",
@@ -37,6 +44,7 @@ const getDefaultContent = (): ContentData => ({
         name: "Habitación Standard",
         description: "Ideal para viajeros que buscan comodidad y autenticidad a un precio accesible.",
         price: "$120/noche",
+        showPrice: true,
         image:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
         features: ["1 cama doble", "Baño privado", "WiFi"],
@@ -46,6 +54,7 @@ const getDefaultContent = (): ContentData => ({
         name: "Habitación Superior",
         description: "Amplio espacio con detalles artesanales y vista a nuestro patio interior.",
         price: "$180/noche",
+        showPrice: true,
         image:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_9b539c78.jpg-Lbxbzr2clkfiDEt4Z2bXfas3yClCC4.jpeg",
         features: ["1 cama king", "Baño con jacuzzi", "Balcón privado"],
@@ -55,6 +64,7 @@ const getDefaultContent = (): ContentData => ({
         name: "Suite Caprilandia",
         description: "Nuestra suite más exclusiva, con detalles originales y todas las comodidades modernas.",
         price: "$250/noche",
+        showPrice: true,
         image:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.07_0e74c316.jpg-OM1mNM8adZDhivB8RzKRa6uQmkQ4TI.jpeg",
         features: ["Dormitorio + sala", "Baño completo", "Terraza privada"],
@@ -70,28 +80,34 @@ const getDefaultContent = (): ContentData => ({
   gallery: {
     title: "Galería",
     subtitle: "Un vistazo a los espacios que hacen único a nuestro hostal.",
-    images: [
+    items: [
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.05_29417220.jpg-3eeWaNe474kWdzXsophopKdyiCUlbW.jpeg",
         alt: "Fachada del hostal",
       },
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2016.51.44_4247fa14.jpg-TLpkNK3FIReTv94oiatcfK9XXC4ugl.jpeg",
         alt: "Detalles arquitectónicos",
       },
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_d9e82168.jpg-Bh4HBqs7fTTwdijxqviqD08miTn2jX.jpeg",
         alt: "Área de restaurante",
       },
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.07.06_20165b0e.jpg-7CJeiR7FIf0WX0cLbqaGmyctchZOgH.jpeg",
         alt: "Decoración tradicional",
       },
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2017.10.22_95b0216a.jpg-I5MQLmHJbMYdpGnGGhsmTbyeHFBdKI.jpeg",
         alt: "Vista interior",
       },
       {
+        type: "image" as const,
         url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagen%20de%20WhatsApp%202025-05-16%20a%20las%2015.46.57_8ba5e1de.jpg-BDqgTOAKgB9QSVi9n9hfs4CS62JFvR.jpeg",
         alt: "Letrero Caprilandia",
       },

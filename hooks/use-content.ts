@@ -453,55 +453,65 @@ export function useContent() {
       setIsLoading(true)
       setError(null)
 
-      // Intentar cargar desde Firebase primero
-      console.log("🔥 Intentando cargar desde Firebase...")
-
-      const response = await fetch("/api/content", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        cache: "no-store",
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        if (result.success && result.data) {
-          // Migrar formato de galería si es necesario
-          const migratedData = migrateGalleryFormat(result.data)
-          setContentState(migratedData)
-          setIsConnected(true)
-          setUseLocalStorage(false)
-          // Guardar backup en localStorage
-          saveToLocalStorage(migratedData)
-          console.log("✅ Contenido cargado desde Firebase")
-          return
-        }
-      }
-
-      throw new Error("Firebase no disponible")
-    } catch (error) {
-      console.warn("⚠️ Firebase no disponible, usando localStorage...")
-
-      // Intentar cargar desde localStorage
+      // Cargar desde localStorage PRIMERO para mostrar contenido inmediatamente
+      console.log("📱 Cargando desde localStorage para mostrar contenido inmediatamente...")
       const loadedFromLocal = loadFromLocalStorage()
 
       if (loadedFromLocal) {
-        // Aplicar migración también a datos locales
-        const currentLocalData = JSON.parse(localStorage.getItem("hostal-content") || "{}")
-        const migratedLocalData = migrateGalleryFormat(currentLocalData)
-        setContentState(migratedLocalData)
+        // Si hay datos en localStorage, usarlos inmediatamente
+        console.log("✅ Contenido cargado desde localStorage")
         setIsConnected(false)
         setUseLocalStorage(true)
-        setError("Usando almacenamiento local (Firebase no disponible)")
+        setError("Contenido local cargado - Intentando conexión con Firebase...")
+        setIsLoading(false) // Mostrar contenido inmediatamente
       } else {
-        // Usar contenido por defecto
+        // Si no hay datos locales, usar contenido por defecto inmediatamente
+        console.log("📦 Usando contenido por defecto")
         setContentState(defaultContent)
         setIsConnected(false)
         setUseLocalStorage(true)
-        setError("Usando contenido por defecto")
+        setError("Contenido por defecto cargado - Intentando conexión con Firebase...")
+        setIsLoading(false) // Mostrar contenido inmediatamente
       }
-    } finally {
+
+      // Luego intentar cargar desde Firebase en segundo plano
+      try {
+        console.log("🔥 Intentando cargar desde Firebase en segundo plano...")
+
+        const response = await fetch("/api/content", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data) {
+            // Migrar formato de galería si es necesario
+            const migratedData = migrateGalleryFormat(result.data)
+            setContentState(migratedData)
+            setIsConnected(true)
+            setUseLocalStorage(false)
+            setError(null)
+            // Guardar backup en localStorage
+            saveToLocalStorage(migratedData)
+            console.log("✅ Contenido actualizado desde Firebase")
+            return
+          }
+        }
+      } catch (firebaseError) {
+        console.warn("⚠️ No se pudo conectar con Firebase:", firebaseError)
+        // Mantener el contenido local que ya se cargó
+      }
+    } catch (error) {
+      console.error("❌ Error cargando contenido:", error)
+      // Como último recurso, usar contenido por defecto
+      setContentState(defaultContent)
+      setIsConnected(false)
+      setUseLocalStorage(true)
+      setError("Usando contenido por defecto")
       setIsLoading(false)
     }
   }, [loadFromLocalStorage, saveToLocalStorage])
