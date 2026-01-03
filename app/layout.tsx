@@ -4,7 +4,6 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import FaviconManager from "@/components/favicon-manager"
 import { ChunkErrorHandler } from "./chunk-error-handler"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -15,6 +14,13 @@ export const metadata: Metadata = {
     "Hostal Caprilandia en Zapatoca, Santander. El mejor alojamiento en Zapatoca. Hostal acogedor que combina tradición y comodidad moderna. Reserva tu estadía en el mejor hostal de Zapatoca.",
   keywords: "caprilandia, hostal caprilandia, hostal zapatoca, hostales en zapatoca, hostal santander, alojamiento zapatoca, hotel zapatoca, hospedaje zapatoca, turismo zapatoca, habitaciones zapatoca, posada zapatoca, reservas zapatoca, colombia, santander",
   authors: [{ name: "Hostal Caprilandia Zapatoca" }],
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/favicon.svg',
+  },
   robots: {
     index: true,
     follow: true,
@@ -112,8 +118,6 @@ export default function RootLayout({
           `,
           }}
         />
-        {/* Favicon Manager */}
-        <FaviconManager />
       </head>
       <body className={inter.className}>
         <ChunkErrorHandler />

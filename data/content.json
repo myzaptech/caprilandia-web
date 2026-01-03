@@ -110,7 +110,7 @@
   "virtualTour": {
     "title": "Tour Virtual",
     "subtitle": "Conoce nuestras instalaciones desde casa",
-    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+    "videoUrl": "https://www.youtube.com/embed/73uIlU90th0"
   },
   "gallery": {
     "title": "Galería",
@@ -118,37 +118,9 @@
     "items": [
       {
         "type": "video",
-        "url": "/uploads/videos/1760915428561_d9zakp875.mp4",
-        "alt": "Video 1 - Hostal Caprilandia",
-        "thumbnail": "/uploads/thumbnails/video-1-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "url": "/uploads/videos/1760915596717_eka9mqevg.mp4",
-        "alt": "Video 2 - Hostal Caprilandia",
-        "thumbnail": "/uploads/thumbnails/video-2-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "url": "/uploads/videos/1760915644669_zghxcgejo.mp4",
-        "alt": "Video 3 - Hostal Caprilandia",
-        "thumbnail": "/uploads/thumbnails/video-3-thumb.jpg"
-      },
-      {
-        "type": "video",
-        "url": "/uploads/videos/1760916177786_bxmumsc71.mp4",
-        "alt": "Video 4 - Hostal Caprilandia",
-        "thumbnail": "/uploads/thumbnails/video-4-thumb.jpg"
-      },
-      {
-        "type": "image",
-        "url": "/uploads/images/gallery-1.jpg",
-        "alt": "Fachada del hostal"
-      },
-      {
-        "type": "image",
-        "url": "/uploads/images/gallery-2.jpg",
-        "alt": "Patio interior"
+        "url": "/uploads/videos/1767469921906_14ri0ipt4.mp4",
+        "alt": "Video del Hostal Caprilandia",
+        "thumbnail": "/uploads/thumbnails/1767469922282_s8cdhpqho.jpg"
       }
     ]
   },
@@ -275,5 +247,9 @@
     "title": "Ubicación Hostal Caprilandia - Zapatoca, Santander",
     "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d350.16210276890513!2d-73.26600351968037!3d6.814540731844357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e6832a2bf719429%3A0x50f0263dbf207ef2!2sHostal%20caprilandia!5e0!3m2!1ses-419!2sco!4v1760895441635!5m2!1ses-419!2sco",
     "directUrl": "https://goo.gl/maps/example"
+  },
+  "metadata": {
+    "lastUpdated": "2026-01-03T20:02:42.806Z",
+    "version": "1.0.0"
   }
 }

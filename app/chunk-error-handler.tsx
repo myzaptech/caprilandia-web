@@ -85,11 +85,16 @@ export function ChunkErrorHandler() {
 
       // Cleanup
       return () => {
-        window.removeEventListener('error', handleChunkError)
-        window.removeEventListener('error', handleResourceError, true)
-        window.removeEventListener('unhandledrejection', handleUnhandledRejection)
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('error', handleChunkError)
+          window.removeEventListener('error', handleResourceError, true)
+          window.removeEventListener('unhandledrejection', handleUnhandledRejection)
+        }
       }
     }
+    
+    // Return empty cleanup function if window is undefined
+    return () => {}
   }, [])
 
   return null

@@ -1,4 +1,4 @@
-// File: P:\caprilandia-web\app\layout.tsx
+// File: /home/tonitux/Documents/code/caprilandia-web/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

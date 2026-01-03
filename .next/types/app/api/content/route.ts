@@ -1,4 +1,4 @@
-// File: P:\caprilandia-web\app\api\content\route.ts
+// File: /home/tonitux/Documents/code/caprilandia-web/app/api/content/route.ts
 import * as entry from '../../../../../app/api/content/route.js'
 import type { NextRequest } from 'next/server.js'
 

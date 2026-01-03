@@ -111,6 +111,4 @@ export function useContentCleanup(content: ContentData, setContent: (content: Co
       cleanupContent()
     }
   }, []) // Solo ejecutar una vez al cargar
-
-  return null
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,6 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/s
 import FaviconManager from "@/components/favicon-manager"
 import SafeImage from "@/components/safe-image"
 import SafeVideo from "@/components/safe-video"
-import MediaDiagnostics from "@/components/media-diagnostics"
 import {
   MapPin,
   Phone,
@@ -33,7 +32,6 @@ import {
 } from "lucide-react"
 import { useContent } from "@/hooks/use-content"
 import { useContentCleanup } from "@/hooks/use-content-cleanup"
-import { useUploadsCleaner } from "@/hooks/use-uploads-cleaner"
 
 // Función helper para manejar enlaces de WhatsApp multiplataforma
 const openWhatsApp = (phoneNumber: string, message: string, fallbackMessage?: string) => {
@@ -86,7 +84,7 @@ const openWhatsApp = (phoneNumber: string, message: string, fallbackMessage?: st
 function RoomGallery({ room, content }: { room: any; content: any }) {
   const [selectedMedia, setSelectedMedia] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const media = room.media || []
+  const media = useMemo(() => room.media || [], [room.media])
   
   if (media.length === 0) {
     return (
@@ -209,11 +207,12 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
             >
               {item.type === 'video' ? (
                 <>
-                  <Image
-                    src={item.thumbnail || "/placeholder.svg"}
+                  <SafeImage
+                    src={item.thumbnail || item.url || "/placeholder.svg"}
                     alt={item.alt || `Video ${index + 1}`}
                     fill
                     className="object-cover"
+                    fallbackSrc="/placeholder.svg"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                     <Play className="w-5 h-5 text-white" fill="white" />
@@ -224,11 +223,12 @@ function RoomGallery({ room, content }: { room: any; content: any }) {
                 </>
               ) : (
                 <>
-                  <Image
+                  <SafeImage
                     src={item.url || "/placeholder.svg"}
                     alt={item.alt || `Imagen ${index + 1}`}
                     fill
                     className="object-cover"
+                    fallbackSrc="/placeholder.svg"
                   />
                   <div className="absolute bottom-1 right-1 bg-blue-500 text-white text-xs px-1 rounded">
                     IMG
@@ -305,70 +305,6 @@ export default function HomePage() {
 
   // Hook para limpiar URLs de uploads que no existen
   useContentCleanup(content, setContent)
-  
-  // Hook para interceptar y limpiar errores 404 de uploads
-  const { cleanAllUploads } = useUploadsCleaner()
-
-  // Estado para el botón de limpieza de emergencia
-  const [showCleanupBtn, setShowCleanupBtn] = useState(false)
-  const [isCleaningUploads, setIsCleaningUploads] = useState(false)
-  const [isUpdatingContent, setIsUpdatingContent] = useState(false)
-
-  // Mostrar botón de limpieza después de 5 segundos (en caso de errores persistentes)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowCleanupBtn(true)
-    }, 5000)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const handleEmergencyCleanup = async () => {
-    if (!confirm('¿Limpiar todas las imágenes y videos que no existen? Esto puede mejorar el rendimiento de la página.')) {
-      return
-    }
-    
-    setIsCleaningUploads(true)
-    try {
-      await cleanAllUploads()
-    } catch (error) {
-      console.error('Error en limpieza de emergencia:', error)
-    } finally {
-      setIsCleaningUploads(false)
-    }
-  }
-
-  const handleForceUpdateContent = async () => {
-    if (!confirm('¿Forzar actualización del contenido desde el archivo local? Esto restaurará los videos que no aparecen.')) {
-      return
-    }
-    
-    setIsUpdatingContent(true)
-    try {
-      const response = await fetch('/api/force-update-content', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-      
-      const result = await response.json()
-      
-      if (result.success) {
-        alert(`✅ Contenido actualizado! Se encontraron ${result.videosFound} videos. La página se recargará.`)
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
-      } else {
-        alert(`❌ Error: ${result.error}`)
-      }
-      
-    } catch (error) {
-      console.error('Error forzando actualización:', error)
-      alert('❌ Error de red al actualizar contenido')
-    } finally {
-      setIsUpdatingContent(false)
-    }
-  }
 
   if (isLoading) {
     return (
@@ -383,60 +319,11 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Favicon Manager */}
+      {/* Favicon Manager - ahora vacío, manejado por metadata */}
       <FaviconManager faviconUrl={content.siteConfig?.favicon} title={content.siteConfig?.title} />
-      
-      {/* Media Diagnostics (solo en desarrollo) */}
-      <MediaDiagnostics />
 
       {/* WhatsApp Floating Button */}
-      <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-3">
-        {/* Botón de actualización de contenido */}
-        {showCleanupBtn && (
-          <button
-            onClick={handleForceUpdateContent}
-            disabled={isUpdatingContent}
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center group relative"
-            title="Restaurar videos desde archivo local"
-          >
-            <div className="flex items-center p-3">
-              {isUpdatingContent ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <span className="text-lg">🎬</span>
-                  <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-xs font-medium ml-0 group-hover:ml-2 text-xs">
-                    Videos
-                  </span>
-                </>
-              )}
-            </div>
-          </button>
-        )}
-        
-        {/* Botón de limpieza de emergencia */}
-        {showCleanupBtn && (
-          <button
-            onClick={handleEmergencyCleanup}
-            disabled={isCleaningUploads}
-            className="bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center group relative"
-            title="Limpiar imágenes que no cargan"
-          >
-            <div className="flex items-center p-3">
-              {isCleaningUploads ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <span className="text-lg">🧹</span>
-                  <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap overflow-hidden max-w-0 group-hover:max-w-xs font-medium ml-0 group-hover:ml-2 text-xs">
-                    Limpiar
-                  </span>
-                </>
-              )}
-            </div>
-          </button>
-        )}
-        
+      <div className="fixed bottom-6 right-6 z-[60]">
         {/* WhatsApp Button */}
         <button
           onClick={() => {
@@ -914,8 +801,9 @@ export default function HomePage() {
                       </div>
                     </div>
                   )}
-                  {index === content.gallery.items.length - 1 && (
-                    <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                  {/* Overlay con nombre solo si hay más de 2 elementos y es el último */}
+                  {content.gallery.items.length > 2 && index === content.gallery.items.length - 1 && item.type === 'image' && (
+                    <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center pointer-events-none">
                       <span className="text-white text-xl lg:text-2xl font-bold">Caprilandia</span>
                     </div>
                   )}
@@ -1301,7 +1189,7 @@ ${mensaje || 'Sin mensaje adicional'}
                 <li>
                   <button
                     onClick={() => {
-                      const message = "� ¡Hola! Terminé de ver toda su página web del Hostal Caprilandia y me interesa. ¿Podrían contactarme?";
+                      const message = "💬 ¡Hola! Terminé de ver toda su página web del Hostal Caprilandia y me interesa. ¿Podrían contactarme?";
                       openWhatsApp(content.contact.whatsapp, message);
                     }}
                     className="hover:text-white transition-colors text-left"

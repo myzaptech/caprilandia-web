@@ -5,7 +5,8 @@ import type React from "react"
 import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Upload, X, VideoIcon, Play } from "lucide-react"
+import { Progress } from "@/components/ui/progress"
+import { Upload, X, VideoIcon, Play, Loader2 } from "lucide-react"
 import { FirebaseStorageManager } from "@/lib/firebase-storage"
 
 interface VideoUploadProps {
@@ -24,6 +25,8 @@ export default function VideoUpload({
   maxSize = 50, // Videos pueden ser más grandes
 }: VideoUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadStatus, setUploadStatus] = useState<string>("")
   const [dragActive, setDragActive] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -43,18 +46,23 @@ export default function VideoUpload({
     }
 
     setIsUploading(true)
+    setUploadProgress(0)
+    setUploadStatus("Preparando video...")
 
     try {
       console.log(`🚀 Subiendo video a Firebase Storage: ${file.name}`)
       
-      // Subir video a Firebase Storage
-      const result = await FirebaseStorageManager.uploadFile(file, 'videos')
+      // Subir video con progreso usando XMLHttpRequest
+      const result = await uploadFileWithProgress(file, 'videos')
       
       console.log(`✅ Video subido exitosamente: ${result.url}`)
+      setUploadProgress(100)
+      setUploadStatus("Video subido correctamente")
       onVideoChange(result.url)
       
       // Generar thumbnail del video si es posible
       try {
+        setUploadStatus("Generando miniatura...")
         const thumbnail = await generateThumbnail(file)
         if (thumbnail && onThumbnailChange) {
           console.log(`🖼️ Generando thumbnail para video...`)
@@ -67,21 +75,86 @@ export default function VideoUpload({
           // Limpiar el blob URL temporal para liberar memoria
           URL.revokeObjectURL(thumbnail)
           
-          // Subir thumbnail a Firebase Storage
+          // Subir thumbnail a Firebase Storage (sin progreso para thumbnail, es pequeño)
+          setUploadStatus("Subiendo miniatura...")
           const thumbnailResult = await FirebaseStorageManager.uploadFile(thumbnailFile, 'thumbnails')
           console.log(`✅ Thumbnail subido exitosamente: ${thumbnailResult.url}`)
           onThumbnailChange(thumbnailResult.url)
         }
+        setUploadStatus("Completado")
       } catch (thumbnailError) {
         console.warn("⚠️ No se pudo generar thumbnail:", thumbnailError)
+        setUploadStatus("Video subido (sin miniatura)")
         // No es crítico si falla el thumbnail
       }
     } catch (error) {
       console.error("❌ Error subiendo video:", error)
+      setUploadStatus("Error al subir el video")
       alert(`Error al subir el video: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     } finally {
-      setIsUploading(false)
+      // Mantener el estado de carga por 1 segundo más para que el usuario vea el 100%
+      setTimeout(() => {
+        setIsUploading(false)
+        setUploadProgress(0)
+        setUploadStatus("")
+      }, 1000)
     }
+  }
+
+  // Función para subir archivo con progreso usando XMLHttpRequest
+  const uploadFileWithProgress = (file: File, folder: string): Promise<{ url: string; type: string; filename: string; path: string }> => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('folder', folder)
+      
+      const xhr = new XMLHttpRequest()
+      
+      // Monitorear progreso
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const percentComplete = Math.round((e.loaded / e.total) * 100)
+          setUploadProgress(percentComplete)
+          setUploadStatus(`Subiendo video... ${percentComplete}%`)
+        }
+      })
+      
+      // Manejar respuesta
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          try {
+            const result = JSON.parse(xhr.responseText)
+            if (result.success) {
+              resolve({
+                url: result.url,
+                type: result.type,
+                filename: result.filename,
+                path: result.path
+              })
+            } else {
+              reject(new Error(result.error || 'Error desconocido'))
+            }
+          } catch (error) {
+            reject(new Error('Error parseando respuesta'))
+          }
+        } else {
+          reject(new Error(`Error HTTP: ${xhr.status}`))
+        }
+      })
+      
+      // Manejar errores
+      xhr.addEventListener('error', () => {
+        reject(new Error('Error de red al subir el archivo'))
+      })
+      
+      xhr.addEventListener('abort', () => {
+        reject(new Error('Carga cancelada'))
+      })
+      
+      // Iniciar carga
+      xhr.open('POST', '/api/upload')
+      xhr.send(formData)
+    })
   }
 
   const generateThumbnail = (videoFile: File): Promise<string> => {
@@ -172,7 +245,7 @@ export default function VideoUpload({
         onDragOver={handleDrag}
         onDrop={handleDrop}
       >
-        {currentVideo ? (
+        {currentVideo && !isUploading ? (
           <div className="relative w-full h-full">
             <video
               src={currentVideo}
@@ -190,6 +263,22 @@ export default function VideoUpload({
             >
               <X className="w-4 h-4" />
             </Button>
+          </div>
+        ) : isUploading ? (
+          <div className="flex flex-col items-center justify-center p-6 text-center h-full bg-gray-50">
+            <Loader2 className="w-12 h-12 mb-4 text-teal-600 animate-spin" />
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              {uploadStatus || "Subiendo video..."}
+            </p>
+            <div className="w-full max-w-xs space-y-2">
+              <Progress value={uploadProgress} className="h-3" />
+              <p className="text-xs text-gray-500">
+                {uploadProgress}% completado
+              </p>
+            </div>
+            <p className="text-xs text-gray-400 mt-4">
+              Por favor, no cierres esta página hasta que termine la carga
+            </p>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center p-6 text-center h-full">
@@ -226,6 +315,7 @@ export default function VideoUpload({
             }
           }}
           className="hidden"
+          disabled={isUploading}
         />
       </div>
     </div>
