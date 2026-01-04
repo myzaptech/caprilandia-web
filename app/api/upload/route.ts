@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { put } from '@vercel/blob'
 import { writeFile } from 'fs/promises'
 import path from 'path'
-
-const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,54 +19,23 @@ export async function POST(request: NextRequest) {
     
     // Validar tamaño para videos
     const isVideo = file.type.startsWith('video/')
-    const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024 // 100MB para videos, 10MB para imágenes
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB para videos, 10MB para imágenes
     
     if (file.size > maxSize) {
       return NextResponse.json({ 
-        error: `Archivo muy grande. Máximo ${isVideo ? '100MB para videos' : '10MB para imágenes'}` 
+        error: `Archivo muy grande. Máximo ${isVideo ? '50MB para videos' : '10MB para imágenes'}` 
       }, { status: 400 })
     }
     
     // Generate unique filename
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substr(2, 9)
-    const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'bin'
+    const fileExtension = file.name.split('.').pop()
     const filename = `${timestamp}_${randomId}.${fileExtension}`
-    const filePath = `uploads/${folder}/${filename}`
-
-    // En producción (Vercel), usar Vercel Blob
-    if (isProduction) {
-      console.log('☁️ Modo producción: Usando Vercel Blob...')
-      
-      try {
-        const blob = await put(filePath, file, {
-          access: 'public',
-          addRandomSuffix: false,
-        })
-        
-        console.log(`✅ Archivo subido a Vercel Blob: ${blob.url}`)
-        
-        return NextResponse.json({
-          success: true,
-          url: blob.url,
-          type: isVideo ? 'video' : 'image',
-          filename,
-          path: filePath
-        })
-      } catch (blobError) {
-        console.error('❌ Error subiendo a Vercel Blob:', blobError)
-        return NextResponse.json(
-          { error: 'Error subiendo archivo a almacenamiento en la nube' },
-          { status: 500 }
-        )
-      }
-    }
     
-    // En desarrollo, usar sistema de archivos local
-    console.log('💻 Modo desarrollo: Usando sistema de archivos local...')
-    
+    // Create directory path
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', folder)
-    const localFilePath = path.join(uploadDir, filename)
+    const filePath = path.join(uploadDir, filename)
     
     try {
       // Ensure directory exists
@@ -81,53 +47,43 @@ export async function POST(request: NextRequest) {
       // Save file to public directory
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
-      await writeFile(localFilePath, buffer)
+      await writeFile(filePath, buffer)
       
       // Return public URL
       const publicUrl = `/uploads/${folder}/${filename}`
       
-      console.log(`✅ Archivo guardado localmente: ${publicUrl}`)
+      console.log(`✅ Archivo guardado en: ${publicUrl}`)
       
       return NextResponse.json({
         success: true,
         url: publicUrl,
-        type: isVideo ? 'video' : 'image',
+        type: file.type.startsWith('image/') ? 'image' : 'video',
         filename,
         path: `${folder}/${filename}`
       })
       
     } catch (fsError) {
-      console.error('❌ Error guardando archivo localmente:', fsError)
+      console.warn('⚠️ Error guardando archivo:', fsError)
       
-      // Para videos, no usar base64 fallback
+      // Para videos, NO usar base64 fallback ya que es muy pesado
       if (isVideo) {
-        return NextResponse.json(
-          { error: 'Error guardando video. Intente de nuevo.' },
-          { status: 500 }
-        )
+        throw new Error('Error guardando video. Los videos deben guardarse como archivos físicos.')
       }
       
-      // Solo para imágenes pequeñas, usar base64 fallback
-      if (file.size < 1024 * 1024) { // Solo si es menor a 1MB
-        const bytes = await file.arrayBuffer()
-        const buffer = Buffer.from(bytes)
-        const base64 = `data:${file.type};base64,${buffer.toString('base64')}`
-        
-        console.log(`✅ Imagen procesada como base64 fallback: ${filename}`)
-        
-        return NextResponse.json({
-          success: true,
-          url: base64,
-          type: 'image',
-          filename,
-          path: `${folder}/${filename}`
-        })
-      }
+      // Solo para imágenes, usar base64 fallback
+      const bytes = await file.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`
       
-      return NextResponse.json(
-        { error: 'Error guardando archivo' },
-        { status: 500 }
-      )
+      console.log(`✅ Imagen procesada como base64 fallback: ${filename}`)
+      
+      return NextResponse.json({
+        success: true,
+        url: base64,
+        type: 'image',
+        filename,
+        path: `${folder}/${filename}`
+      })
     }
     
   } catch (error) {
@@ -139,9 +95,5 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Configuración para archivos grandes
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
+// Note: In App Router, body parsing is handled differently
+// File size limits can be configured in next.config.js if needed
