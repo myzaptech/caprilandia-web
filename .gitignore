@@ -4,11 +4,15 @@
 /node_modules
 
 # next.js
-# /.next/ # Comentado para permitir subir build al servidor
+.next/
 /out/
 
 # production
 /build
+
+# uploads - archivos subidos localmente no deben ir a producción
+/public/uploads/
+/public/uploads/**/*
 
 # debug
 npm-debug.log*
